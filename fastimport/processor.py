@@ -46,6 +46,7 @@ class ImportProcessor(object):
     def _process(self, command_iter):
         self.pre_process()
         for cmd in command_iter():
+            #print cmd.dump_str(verbose=True)
             #print "starting"
             try:
                 #print cmd.name
@@ -121,6 +122,7 @@ class CommitHandler(object):
     def process(self):
         self.pre_process_files()
         for fc in self.command.file_iter():
+            #print fc.dump_str(verbose=True)
             try:
                 handler = self.__class__.__dict__[fc.name[4:] + "_handler"]
             except KeyError:

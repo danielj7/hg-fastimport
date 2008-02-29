@@ -32,40 +32,24 @@ class HgEchoProcessor(processor.ImportProcessor):
         self.finished = False
         
     def progress_handler(self, cmd):
-        """Process a ProgressCommand."""
-        self.ui.write("Cmd: %s\n" % repr(cmd))
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
     def blob_handler(self, cmd):
-        """Process a BlobCommand."""
-        self.ui.write("Cmd: %s\n" % repr(cmd))
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
     def checkpoint_handler(self, cmd):
-        """Process a CheckpointCommand."""
-        self.ui.write("Cmd: %s\n" % repr(cmd))
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
     def commit_handler(self, cmd):
-        """Process a CommitCommand."""
-        self.ui.write("Commit: %s\n" % repr(cmd))
         commit_handler = HgEchoCommitHandler(cmd, self.ui, self.repo, **self.opts)
         commit_handler.process()
-        self.ui.write("Done commit\n")
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
     def reset_handler(self, cmd):
-        """Process a ResetCommand."""
-        self.ui.write("Cmd: %s\n" % repr(cmd))
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
     def tag_handler(self, cmd):
-        """Process a TagCommand."""
-        self.ui.write("Cmd: %s\n" % repr(cmd))
-
-    def finished(self):
-        self.ui.write("Finished")
-
-    def pre_handler(self, cmd):
-        self.ui.write("Pre-handler: %s\n" % repr(cmd))
-
-    def post_handler(self, cmd):
-        self.ui.write("Post-handler: %s\n" % repr(cmd))
+        self.ui.write(cmd.dump_str(verbose=True) + "\n")
 
 class HgEchoCommitHandler(processor.CommitHandler):
 
@@ -75,41 +59,17 @@ class HgEchoCommitHandler(processor.CommitHandler):
         self.repo = repo
         self.opts = opts
 
-    def process(self):
-        self.pre_process_files()
-        for fc in self.command.file_iter():
-            try:
-                handler = self.__class__.__dict__[fc.name[4:] + "_handler"]
-            except KeyError:
-                raise errors.MissingHandler(fc.name)
-            else:
-                handler(self, fc)
-        self.post_process_files()
-
-    def pre_process_files(self):
-        """Prepare for committing."""
-        pass
-
-    def post_process_files(self):
-        """Save the revision."""
-        pass
-
     def modify_handler(self, filecmd):
-        """Handle a filemodify command."""
-        self.ui.write("Cmd: %s\n" % repr(filecmd))
+        self.ui.write(filecmd.dump_str(verbose=True) + "\n")
 
     def delete_handler(self, filecmd):
-        """Handle a filedelete command."""
-        self.ui.write("Cmd: %s\n" % repr(filecmd))
+        self.ui.write(filecmd.dump_str(verbose=True) + "\n")
 
     def copy_handler(self, filecmd):
-        """Handle a filecopy command."""
-        self.ui.write("Cmd: %s\n" % repr(filecmd))
+        self.ui.write(filecmd.dump_str(verbose=True) + "\n")
 
     def rename_handler(self, filecmd):
-        """Handle a filerename command."""
-        self.ui.write("Cmd: %s\n" % repr(filecmd))
+        self.ui.write(filecmd.dump_str(verbose=True) + "\n")
 
     def deleteall_handler(self, filecmd):
-        """Handle a filedeleteall command."""
-        self.ui.write("Cmd: %s\n" % repr(filecmd))
+        self.ui.write(filecmd.dump_str(verbose=True) + "\n")

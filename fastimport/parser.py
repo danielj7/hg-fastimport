@@ -268,7 +268,6 @@ class ImportParser(LineBasedParser):
         self.output = output
         # We auto-detect the date format when a date is first encountered
         self.date_parser = None
-        self.last_mark = None
 
     def iter_commands(self):
         """Iterator returning ImportCommand objects."""
@@ -292,7 +291,7 @@ class ImportParser(LineBasedParser):
             elif line.startswith('checkpoint'):
                 yield commands.CheckpointCommand()
             else:
-                #print line
+                print line
                 self.abort(errors.InvalidCommand, line)
 
     def iter_file_commands(self):
@@ -340,20 +339,14 @@ class ImportParser(LineBasedParser):
         committer = self._get_user_info('commit', 'committer')
         message = self._get_data('commit', 'message')
         from_ = self._get_from()
-        if from_ is None:
-            from_ = self.last_mark
-        self.last_mark = mark
-        if from_ is not None:
-            parents = [from_]
-            while True:
-                merge = self._get_merge()
-                if merge is not None:
-                    parents.append(merge)
-                else:
-                    break
-        else:
-            parents = []
-        return commands.CommitCommand(ref, mark, author, committer, message,
+        parents = []
+        while True:
+            merge = self._get_merge()
+            if merge is not None:
+                parents.append(merge)
+            else:
+                break
+        return commands.CommitCommand(ref, mark, author, committer, message, from_,
             parents, self.iter_file_commands, lineno)
 
     def _parse_file_modify(self, info):
@@ -442,9 +435,12 @@ class ImportParser(LineBasedParser):
                 size = int(rest)
                 res = self.read_bytes(size)
                 # consume extra LF if present
-                line = self.next_line()
-                if line != '':
-                    self.push_line(line)
+                while True:
+                    line = self.next_line()
+                    if line != '':
+                        self.push_line(line)
+                        break
+                return res
         else:
             self.abort(errors.MissingSection, required_for, section)
 
@@ -474,9 +470,13 @@ class ImportParser(LineBasedParser):
         """Parse a path."""
         if s.startswith('"'):
             if s[-1] != '"':
-                self.abort(errors.BadFormat, cmd, section, s)
+                self.abort(errors.BadFormat)
             else:
-                return _unquote_c_string(s[1:-1])
+                s = _unquote_c_string(s[1:-1])
+        # Check path for sanity
+        sp = s.split("/")
+        if "" in sp or ".." in sp:
+            self.abort(errors.BadFormat)
         return s
 
     def _path_pair(self, s):
