@@ -22,8 +22,14 @@
 # Prefix to messages to show location information
 _LOCATION_FMT = "line %(lineno)d: "
 
+class FmtException(StandardError):
+    def __str__(self):
+        return repr(self)
 
-class ImportError(Exception):
+    def __repr__(self):
+        return self._fmt % self.__dict__
+
+class ImportError(FmtException):
     """The base exception class for all import processing exceptions."""
 
     _fmt = "Unknown Import Error"
