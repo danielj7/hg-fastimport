@@ -68,31 +68,41 @@ class HgImportProcessor(processor.ImportProcessor):
             first_parent = self.committish_rev(cmd.from_)
         else:
             first_parent = self.branch_map.get(cmd.ref, nullrev)
+        #self.ui.write("First parent: %s\n" % first_parent)
         # Update to the first parent
         mercurial.hg.clean(self.repo, self.repo.lookup(first_parent))
+        #self.ui.write("Bing\n")
         if cmd.parents:
+            #self.ui.write("foo")
             if len(cmd.parents) > 1:
                 raise NotImplementedError("Can't handle more than two parents")
-            second_parent = cmd.parents[0]
+            second_parent = self.committish_rev(cmd.parents[0])
+            #self.ui.write("Second parent: %s\n" % second_parent)
             mercurial.commands.debugsetparents(self.ui, self.repo, 
                 first_parent, second_parent)
+        #self.ui.write("Bing\n")
         if cmd.ref == "refs/heads/master":
             branch = "default"
         else:
             branch = cmd.ref[len("refs/heads/"):]
+        #self.ui.write("Branch: %s\n" % branch)
         self.repo.dirstate.setbranch(branch)
+        #self.ui.write("Bing\n")
         #print "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
         commit_handler = HgImportCommitHandler(cmd, self.ui, self.repo, **self.opts)
         commit_handler.process()
         #print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        #self.ui.write(cmd.dump_str(verbose=True))
         node = self.repo.rawcommit(files = commit_handler.filelist(),
             text = cmd.message,
             user = cmd.committer[1],
             date = self.convert_date(cmd.committer))
         rev = self.repo.changelog.rev(node)
-        self.mark_map[cmd.mark] = rev
+        if cmd.mark is not None:
+            self.mark_map[":" + cmd.mark] = rev
         self.branch_map[cmd.ref] = rev
         self.ui.write("Done commit of rev %d\n" % rev)
+        #self.ui.write("%s\n" % self.mark_map)
 
     def convert_date(self, c):
         res = (int(c[2]), int(c[3]))
@@ -139,9 +149,9 @@ class HgImportCommitHandler(processor.CommitHandler):
         #print self.repo.add([filecmd.path])
         #print "Done:", filecmd.path
 
-    #def delete_handler(self, filecmd):
-    #    self.files.add(filecmd.path)
-    #    os.remove(filecmd.path)
+    def delete_handler(self, filecmd):
+        self.files.add(filecmd.path)
+        self.repo.remove([filecmd.path], unlink=True)
 
     #def copy_handler(self, filecmd):
     #    self.files.add(filecmd.path)
