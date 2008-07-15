@@ -1,0 +1,42 @@
+hg-fastimport - a tool for importing "git-fast-import" files into Mercurial
+
+Paul Crowley, LShift Ltd, July 2008
+paul@lshift.net
+
+WARNING: this tool is very incomplete and barely tested.  It is currently intended for active developers only.
+
+hg-fastimport is (or will be) a tool which converts "git-fast-import" files into Mercurial repositories.  "git-fast-import" is a file format for representing the entire history of a version control repository.
+
+http://www.kernel.org/pub/software/scm/git-core/docs/git-fast-import.html
+
+This file format was designed to make it easier to write tools which converted from foreign VCS repository formats into "git" format; such tools exist for CVS, Mercurial, and Darcs.  
+
+http://cvs2svn.tigris.org/cvs2git.html
+http://repo.or.cz/w/fast-export.git
+http://repo.or.cz/w/darcs2git.git
+
+As well as the original "git-fast-import" program which imports these files into Git, a reader that imports them into Mercurial has been written
+
+http://bazaar-vcs.org/BzrFastImport
+
+With the addition of this tool, "git-fast-import" is becoming a "lingua franca" for the exchange of repository histories between revision control tools.
+
+This tool draws heavily on the work done for BzrFastImport, and so is covered by the GPL.
+
+    hg-fastimport - imports "git-fast-import" files into Mercurial.
+    Copyright (C) 2008 LShift Ltd. (original portions)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
