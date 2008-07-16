@@ -20,15 +20,16 @@ http://cvs2svn.tigris.org/cvs2git.html
 http://repo.or.cz/w/fast-export.git
 http://repo.or.cz/w/darcs2git.git
 
-As well as the original "git-fast-import" program which imports these
-files into Git, a reader that imports them into Bazaar has been
-written
+However, there's no reason Git should be the only VCS to read
+git-fast-import files; there is a mature tool to read them into Bazaar
+repositories.
 
 http://bazaar-vcs.org/BzrFastImport
 
-with this tool adds Mercurial import support, "git-fast-import" is
-becoming a "lingua franca" for the exchange of repository histories
-between revision control tools.
+If this tool can become an equally effective reader of such files for
+Mercurial repositories, "git-fast-import" can become a "lingua franca"
+for the exchange of repository histories between revision control
+tools.
 
 This tool draws heavily on the work done for BzrFastImport, and so is
 covered by the GPL.
