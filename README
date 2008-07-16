@@ -21,14 +21,14 @@ http://repo.or.cz/w/fast-export.git
 http://repo.or.cz/w/darcs2git.git
 
 As well as the original "git-fast-import" program which imports these
-files into Git, a reader that imports them into Mercurial has been
+files into Git, a reader that imports them into Bazaar has been
 written
 
 http://bazaar-vcs.org/BzrFastImport
 
-With the addition of this tool, "git-fast-import" is becoming a
-"lingua franca" for the exchange of repository histories between
-revision control tools.
+with this tool adds Mercurial import support, "git-fast-import" is
+becoming a "lingua franca" for the exchange of repository histories
+between revision control tools.
 
 This tool draws heavily on the work done for BzrFastImport, and so is
 covered by the GPL.
