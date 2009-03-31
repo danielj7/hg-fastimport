@@ -35,6 +35,12 @@ class ImportCommand(object):
         # List of field names not to display
         self._binary = []
 
+    def __repr__(self):
+        return "<%s at %x: %s>" % (self.__class__.__name__, id(self), self)
+
+    def __str__(self):
+        return self.name
+
     def dump_str(self, names=None, child_lists=None, verbose=False):
         """Dump fields as a string.
 
@@ -76,6 +82,9 @@ class BlobCommand(ImportCommand):
             self.id = ':' + mark
         self._binary = ['data']
 
+    def __str__(self):
+        return self.id
+
 
 class CheckpointCommand(ImportCommand):
 
@@ -103,6 +112,9 @@ class CommitCommand(ImportCommand):
             self.id = '@%d' % lineno
         else:
             self.id = ':' + mark
+
+    def __str__(self):
+        return "ref %s, mark %s" % (self.ref, self.mark)
 
     def dump_str(self, names=None, child_lists=None, verbose=False):
         result = [ImportCommand.dump_str(self, names, verbose=verbose)]
@@ -141,6 +153,9 @@ class TagCommand(ImportCommand):
         self.tagger = tagger
         self.message = message
 
+    def __str__(self):
+        return self.id
+
 
 class FileCommand(ImportCommand):
     """Base class for file commands."""
@@ -159,12 +174,18 @@ class FileModifyCommand(FileCommand):
         self.data = data
         self._binary = ['data']
 
+    def __str__(self):
+        return self.path
+
 
 class FileDeleteCommand(FileCommand):
 
     def __init__(self, path):
         FileCommand.__init__(self, 'filedelete')
         self.path = path
+
+    def __str__(self):
+        return self.path
 
 
 class FileCopyCommand(FileCommand):
@@ -174,6 +195,9 @@ class FileCopyCommand(FileCommand):
         self.src_path = src_path
         self.dest_path = dest_path
 
+    def __str__(self):
+        return "%s -> %s" % (self.src_path, self.dest_path)
+
 
 class FileRenameCommand(FileCommand):
 
@@ -181,6 +205,9 @@ class FileRenameCommand(FileCommand):
         FileCommand.__init__(self, 'filerename')
         self.old_path = old_path
         self.new_path = new_path
+
+    def __str__(self):
+        return "%s -> %s" % (self.old_path, self.new_path)
 
 
 class FileDeleteAllCommand(FileCommand):
