@@ -141,10 +141,11 @@ class HgImportCommitHandler(processor.CommitHandler):
         #print "============================" + filecmd.path
         # FIXME: handle mode
         self.files.add(filecmd.path)
-        self._make_container(filecmd.path)
+        fullpath = os.path.join(self.repo.root, filecmd.path)
+        self._make_container(fullpath)
         #print "made dirs, writing file"
-        f = open(filecmd.path, "w")
         f.write(filecmd.data)
+        f = open(fullpath, "w")
         f.close()
         #print self.repo.add([filecmd.path])
         #print "Done:", filecmd.path
