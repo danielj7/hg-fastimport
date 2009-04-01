@@ -22,8 +22,12 @@ for basing real processors on. See the processors package for examples.
 
 import os
 import os.path
+import errno
+import shutil
+
 import mercurial.hg
 import mercurial.commands
+from mercurial import util
 from mercurial.node import nullrev
 import processor
 
@@ -42,11 +46,39 @@ class HgImportProcessor(processor.ImportProcessor):
         #self.tag_back_map = {}
         self.finished = False
 
+        self.numblobs = 0               # for progress reporting
+        self.blobdir = None
+
+    def teardown(self):
+        if self.blobdir and os.path.exists(self.blobdir):
+            self.ui.status("Removing blob dir %r ...\n" % self.blobdir)
+            shutil.rmtree(self.blobdir)
+
     def progress_handler(self, cmd):
         self.ui.write("Progress: %s\n" % cmd.message)
 
-    # We can't handle blobs - fail
-    #def blob_handler(self, cmd):
+    def blob_handler(self, cmd):
+        if self.blobdir is None:        # no blobs seen yet
+            # XXX cleanup?
+            self.blobdir = os.path.join(self.repo.root, ".hg", "blobs")
+            os.mkdir(self.blobdir)
+
+        fn = self.getblobfilename(cmd.id)
+        blobfile = open(fn, "wb")
+        #self.ui.debug("writing blob %s to %s (%d bytes)\n"
+        #              % (cmd.id, fn, len(cmd.data)))
+        blobfile.write(cmd.data)
+        blobfile.close()
+
+        self.numblobs += 1
+        if self.numblobs % 500 == 0:
+            self.ui.status("%d blobs read\n" % self.numblobs)
+
+    def getblobfilename(self, blobid):
+        if self.blobdir is None:
+            raise RuntimeError("no blobs seen, so no blob directory created")
+        # XXX should escape ":" for windows
+        return os.path.join(self.blobdir, "blob-" + blobid)
 
     def checkpoint_handler(self, cmd):
         # This command means nothing to us
@@ -89,7 +121,8 @@ class HgImportProcessor(processor.ImportProcessor):
         self.repo.dirstate.setbranch(branch)
         #self.ui.write("Bing\n")
         #print "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
-        commit_handler = HgImportCommitHandler(cmd, self.ui, self.repo, **self.opts)
+        commit_handler = HgImportCommitHandler(
+            self, cmd, self.ui, self.repo, **self.opts)
         commit_handler.process()
         #print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
         #self.ui.write(cmd.dump_str(verbose=True))
@@ -124,7 +157,8 @@ class HgImportProcessor(processor.ImportProcessor):
 
 class HgImportCommitHandler(processor.CommitHandler):
 
-    def __init__(self, command, ui, repo, **opts):
+    def __init__(self, parent, command, ui, repo, **opts):
+        self.parent = parent            # HgImportProcessor running the show
         self.command = command
         self.ui = ui
         self.repo = repo
@@ -144,9 +178,29 @@ class HgImportCommitHandler(processor.CommitHandler):
         fullpath = os.path.join(self.repo.root, filecmd.path)
         self._make_container(fullpath)
         #print "made dirs, writing file"
-        f.write(filecmd.data)
-        f = open(fullpath, "w")
-        f.close()
+        if filecmd.dataref:
+            # reference to a blob that has already appeared in the stream
+            fn = self.parent.getblobfilename(filecmd.dataref)
+            if os.path.exists(fullpath):
+                os.remove(fullpath)
+            try:
+                os.link(fn, fullpath)
+            except OSError, err:
+                if err.errno == errno.ENOENT:
+                    # if this happens, it's a problem in the fast-import
+                    # stream
+                    raise util.Abort("bad blob ref %r (no such file %s)"
+                                     % (filecmd.dataref, fn))
+                else:
+                    # anything else is a bug in this extension
+                    # (cross-device move, permissions, etc.)
+                    raise
+        elif filecmd.data:
+            f = open(fullpath, "w")
+            f.write(filecmd.data)
+            f.close()
+        else:
+            raise RuntimeError("either filecmd.dataref or filecmd.data must be set")
         #print self.repo.add([filecmd.path])
         #print "Done:", filecmd.path
 
