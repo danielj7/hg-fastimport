@@ -32,11 +32,14 @@ class ImportProcessor(object):
     methods as appropriate.
     """
     
+    # XXX this is useless now that we process multiple input streams:
+    # we only want to call setup() and teardown() once for all of them!
     def process(self, command_iter):
         """Process the stream of commands.
 
         :param command_iter: an iterator providing commands
         """
+        raise RuntimeError("hey! who's calling this?!?")
         self.setup()
         try:
             self._process(command_iter)
