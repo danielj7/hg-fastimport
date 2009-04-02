@@ -103,7 +103,7 @@ The grammar is:
      # common escapes of 'c' (e..g \n, \t, \\, \") or \nnn where nnn
      # is the signed byte value in octal.  Note that the only
      # characters which must actually be escaped to protect the
-     # stream formatting is: \, " and LF.  Otherwise these values
+     # stream formatting is: \, \" and LF.  Otherwise these values
      # are UTF8.
      #
   ref_str     ::= ref;
