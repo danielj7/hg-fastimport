@@ -147,10 +147,9 @@ class HgImportProcessor(processor.ImportProcessor):
         return "%d %d" % res
         
     def reset_handler(self, cmd):
-        #self.ui.write("Cmd: %s\n" % repr(cmd))
         if cmd.from_ is not None:
-            self.branch_map[cmd.from_] = self.committish_rev(cmd.ref)
-        
+            self.branch_map[cmd.ref] = self.committish_rev(cmd.from_)
+
     def tag_handler(self, cmd):
         # self.tag_map[cmd.id] = self.tag_back_map[cmd.from_]
         pass
