@@ -249,9 +249,8 @@ class LineBasedParser(object):
 
 
 # Regular expression used for parsing. (Note: The spec states that the name
-# part should be non-empty but git-fast-export doesn't always do that so
-# the first bit is \w*, not \w+.)
-_WHO_AND_WHEN_RE = re.compile(r'(\w*) <(.+)> (.+)')
+# part should be non-empty, but git-fast-export doesn't always do that.)
+_WHO_AND_WHEN_RE = re.compile(r'([^\<\n]+) <([^\>\n]+)> (.+)')
 
 
 class ImportParser(LineBasedParser):
