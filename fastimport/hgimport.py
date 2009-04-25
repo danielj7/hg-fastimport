@@ -126,10 +126,16 @@ class HgImportProcessor(processor.ImportProcessor):
         commit_handler.process()
         #print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
         #self.ui.write(cmd.dump_str(verbose=True))
+
+        # in case we are converting from git or bzr, prefer author but
+        # fallback to committer (committer is required, author is
+        # optional)
+        userinfo = cmd.author or cmd.committer
+        user = "%s <%s>" % (userinfo[0], userinfo[1])
         node = self.repo.rawcommit(files = commit_handler.filelist(),
             text = cmd.message,
-            user = cmd.committer[1],
-            date = self.convert_date(cmd.committer))
+            user = user,
+            date = self.convert_date(userinfo))
         rev = self.repo.changelog.rev(node)
         if cmd.mark is not None:
             self.mark_map[":" + cmd.mark] = rev
