@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# A simple dump: two commits, no marks, no blobs
+
+cat > $HGRCPATH <<EOF
+[extensions]
+graphlog =
+fastimport = $TESTDIR/../fastimport
+EOF
+
+cat > simple.dump <<__EOF__
+commit refs/heads/master
+committer Example <example@example.org> 1200000000 +0000
+data 17
+initial revision
+
+M 644 inline file1
+data 14
+file 1 begins
+
+M 644 inline file2
+data 19
+this here be file2
+
+commit refs/heads/master
+committer Example <example@example.org> 1200000001 +0000
+data 11
+add a line
+
+M 644 inline file1
+data 23
+file 1 begins
+new line
+
+__EOF__
+
+set -e
+rm -rf simple
+echo "% importing"
+hg init simple
+cd simple
+hg fastimport ../simple.dump
+
+# It's OK for the log to include changeset IDs, since the fastimport
+# dump includes everything used to compute them, so they should be the
+# same from run to run.
+echo "% hg log"
+hg log
+
+echo "% content of file1, rev 0"
+hg cat -r0 file1
+
+echo "% content of file2, rev 0"
+hg cat -r0 file2
+
+echo "% content of file1, rev 1"
+hg cat -r1 file1
+
+echo "% content of file2, rev 1"
+hg cat -r1 file2

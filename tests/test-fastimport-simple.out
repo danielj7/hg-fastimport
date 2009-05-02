@@ -1,0 +1,27 @@
+% importing
+Reading source: ../simple.dump
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 0
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 1
+% hg log
+changeset:   1:494d62fb22a9
+tag:         tip
+user:        Example <example@example.org>
+date:        Thu Jan 10 21:20:01 2008 +0000
+summary:     add a line
+
+changeset:   0:43689aeeccc7
+user:        Example <example@example.org>
+date:        Thu Jan 10 21:20:00 2008 +0000
+summary:     initial revision
+
+% content of file1, rev 0
+file 1 begins
+% content of file2, rev 0
+this here be file2
+% content of file1, rev 1
+file 1 begins
+new line
+% content of file2, rev 1
+this here be file2

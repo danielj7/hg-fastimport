@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Import an empty fastimport dump.
+
+cat > $HGRCPATH <<EOF
+[extensions]
+fastimport = $TESTDIR/../fastimport
+EOF
+
+hg init dest
+cd dest
+hg fastimport /dev/null
+
+hg log
