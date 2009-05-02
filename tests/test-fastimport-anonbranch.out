@@ -1,0 +1,71 @@
+% import
+Reading source: ../anonbranch.dump
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 0
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 1
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 2
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 3
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 4
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 5
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 6
+% log
+@    6:c454087588c4
+|\   merge
+| |
+| o  5:d7502914e05c
+| |  modify foo
+| |
+o |  4:5dde14f70320
+| |  remove oog
+| |
+| o  3:66562011aee8
+| |  modify bla
+| |
+o |  2:3851fabfd46c
+|/   add oog
+|
+o  1:c09a5b11c17e
+|  modify foo, add bla
+|
+o  0:67886358f17d
+   initial revision
+
+% manifest at rev 0
+bar
+foo
+% manifest at rev 6
+bar
+bla
+foo
+% contents of foo at rev 3
+oof
+% contents of bla at rev 3
+blah blah
+% contents of foo at rev 5
+foo foo
+% contents of foo at rev 6
+oof
+% contents of bar at rev 6
+bar
+% contents of bla at rev 6
+blah blah
+% diff merge with first parent (rev 4:6)
+diff -r 5dde14f70320 -r c454087588c4 bla
+--- a/bla	Thu Jan 10 21:23:00 2008 +0000
++++ b/bla	Thu Jan 10 21:24:00 2008 +0000
+@@ -1,1 +1,1 @@
+-bla
++blah blah
+% diff merge with second parent (rev 5:6)
+diff -r d7502914e05c -r c454087588c4 foo
+--- a/foo	Thu Jan 10 21:23:30 2008 +0000
++++ b/foo	Thu Jan 10 21:24:00 2008 +0000
+@@ -1,1 +1,1 @@
+-foo foo
++oof

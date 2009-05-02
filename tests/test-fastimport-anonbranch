@@ -1,0 +1,152 @@
+#!/bin/sh
+
+# Branching and merging, all on 'master' (aka 'default').
+# The DAG is
+#
+#    0 -- 1 -- 2 -- 4 -- 6
+#          \            /
+#           3 -- 5 -----
+
+cat > $HGRCPATH <<EOF
+[extensions]
+graphlog =
+fastimport = $TESTDIR/../fastimport
+EOF
+
+cat > anonbranch.dump <<__EOF__
+# rev 0
+commit refs/heads/master
+committer Example <example@example.org> 1200000000 +0000
+data 17
+initial revision
+
+M 644 inline foo
+data 4
+foo
+
+M 644 inline bar
+data 4
+bar
+
+# rev 1
+commit refs/heads/master
+mark :1
+committer Example <example@example.org> 1200000060 +0000
+data 20
+modify foo, add bla
+
+M 644 inline foo
+data 4
+oof
+
+M 644 inline bla
+data 4
+bla
+
+# rev 2 (continue "mainline" of master)
+commit refs/heads/master
+mark :2
+committer Example <example@example.org> 1200000090 +0000
+data 8
+add oog
+
+M 644 inline oog
+data 4
+oog
+
+# rev 3 (create branch off rev 1)
+commit refs/heads/master
+mark :3
+committer Example <example@example.org> 1200000120 +0000
+data 11
+modify bla
+
+from :1
+M 644 inline bla
+data 10
+blah blah
+
+# rev 4 (back to "mainline")
+commit refs/heads/master
+mark :4
+committer Example <example@example.org> 1200000180 +0000
+data 11
+remove oog
+
+from :2
+D oog
+
+# rev 5 (back on branch)
+commit refs/heads/master
+mark :5
+committer Example <example@example.org> 1200000210 +0000
+data 11
+modify foo
+
+from :3
+M 644 inline foo
+data 8
+foo foo
+
+# rev 6 (merge branch back to mainline: first parent is 4, second parent is 5)
+commit refs/heads/master
+committer Example <example@example.org> 1200000240 +0000
+data 6
+merge
+
+from :4
+merge :5
+# foo comes from mainline; bla comes from branch
+M 644 inline foo
+data 4
+oof
+
+M 644 inline bla
+data 10
+blah blah
+
+
+__EOF__
+
+# XXX crash if blank line after "merge" command missing, but
+# git-fast-import(1) says it's optional
+
+set -e
+echo "% import"
+rm -rf anonbranch
+hg init anonbranch
+cd anonbranch
+hg fastimport ../anonbranch.dump
+
+echo "% log"
+hg glog --template "{rev}:{node|short}\n{desc}\n\n"
+
+echo "% manifest at rev 0"
+hg manifest -r0
+
+echo "% manifest at rev 6"
+hg manifest -r6
+
+echo "% contents of foo at rev 3"
+hg cat -r3 foo
+
+echo "% contents of bla at rev 3"
+hg cat -r3 bla
+
+echo "% contents of foo at rev 5"
+hg cat -r5 foo
+
+echo "% contents of foo at rev 6"
+hg cat -r6 foo
+
+echo "% contents of bar at rev 6"
+hg cat -r6 bar
+
+echo "% contents of bla at rev 6"
+hg cat -r6 bla
+
+echo "% diff merge with first parent (rev 4:6)"
+hg diff -r4:6
+
+echo "% diff merge with second parent (rev 5:6)"
+hg diff -r5:6
