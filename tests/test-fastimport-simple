@@ -2,11 +2,7 @@
 
 # A simple dump: two commits, no marks, no blobs
 
-cat > $HGRCPATH <<EOF
-[extensions]
-graphlog =
-fastimport = $TESTDIR/../fastimport
-EOF
+. $TESTDIR/fastimport-common
 
 cat > simple.dump <<__EOF__
 commit refs/heads/master

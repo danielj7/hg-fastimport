@@ -7,11 +7,7 @@
 #          \            /
 #           3 -- 5 -----
 
-cat > $HGRCPATH <<EOF
-[extensions]
-graphlog =
-fastimport = $TESTDIR/../fastimport
-EOF
+. $TESTDIR/fastimport-common
 
 cat > anonbranch.dump <<__EOF__
 # rev 0

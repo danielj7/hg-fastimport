@@ -2,10 +2,7 @@
 
 # Import an empty fastimport dump.
 
-cat > $HGRCPATH <<EOF
-[extensions]
-fastimport = $TESTDIR/../fastimport
-EOF
+. $TESTDIR/fastimport-common
 
 hg init dest
 cd dest
