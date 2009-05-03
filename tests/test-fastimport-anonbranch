@@ -101,11 +101,7 @@ M 644 inline bla
 data 10
 blah blah
 
-
 __EOF__
-
-# XXX crash if blank line after "merge" command missing, but
-# git-fast-import(1) says it's optional
 
 set -e
 echo "% import"

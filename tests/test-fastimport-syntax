@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Probe the corners of fastimport syntax to make sure our
+# parser is up to scratch.
+
+. $TESTDIR/fastimport-common
+
+echo "% dump with no newline after merge commit"
+cat > test1.dump <<__EOF__
+# rev 0
+commit refs/heads/master
+mark :1
+committer Example <example@example.org> 1200000000 +0000
+data 0
+
+# rev 1
+commit refs/heads/master
+mark :2
+committer Example <example@example.org> 1200000001 +0000
+data 0
+
+# rev 2 (merge 0 + 1)
+commit refs/heads/master
+mark :3
+committer Example <example@example.org> 1200000002 +0000
+data 0
+from :1
+merge :2
+__EOF__
+
+hg init test1
+cd test1
+hg fastimport ../test1.dump
+hg glog --template "{rev}:{node|short}\n{desc}\n\n"
+cd ..
+
+echo "% dump with redundant 'from' directive"
+cat > test2.dump <<__EOF__
+# rev 0
+commit refs/heads/master
+mark :1
+committer Example <example@example.org> 1200000000 +0000
+data 0
+
+# rev 1
+commit refs/heads/master
+mark :2
+committer Example <example@example.org> 1200000001 +0000
+data 0
+from :1
+
+__EOF__
+
+hg init test2
+cd test2
+hg fastimport ../test2.dump
+hg glog --template "{rev}:{node|short}\n{desc}\n\n"
