@@ -5,7 +5,7 @@
 
 . $TESTDIR/fastimport-common
 
-echo "% dump with no newline after merge commit"
+echo "% dump with no blank line after merge commit"
 cat > test1.dump <<__EOF__
 # rev 0
 commit refs/heads/master
