@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# Test a dump of the style created by cvs2git.  Notable features:
+#   - the dump is in two files: all the file data (blobs) in one,
+#     and everything else (i.e. commit metadata) in the other
+
+# The initial CVS repository was created like this:
+#   mkdir t && cd t
+#   export CVSROOT=$PWD/repo
+#   cvs init
+#   mkdir repo/proj
+#   cvs co proj
+#   cd proj 
+#   echo "hello there" > foo.txt
+#   echo "ooga booga" > ooga
+#   cvs add foo.txt ooga 
+#   cvs ci -m"initial revision"
+#   echo "woof woof\nooga booga\nblah blah" > ooga
+#   cvs ci -m"modify"
+#
+# Then I generated the dumps with
+#   cvs2git --options cvs2git.options
+#
+# where cvs2git.options was a copy of cvs2git-example.options
+# from the trunk of cvs2svn, modified to point the CVS repo
+# I just created.
+
+. $TESTDIR/fastimport-common
+
+cat > git-blob.dat <<EOF
+blob
+mark :1
+data 12
+hello there
+
+blob
+mark :2
+data 31
+woof woof
+ooga booga
+blah blah
+
+blob
+mark :3
+data 11
+ooga booga
+
+EOF
+
+cat > git-dump.dat <<EOF
+commit refs/heads/master
+mark :1000000000
+committer example <example> 1200000000 +0000
+data 17
+initial revision
+
+M 100644 :1 foo.txt
+M 100644 :3 ooga
+
+commit refs/heads/master
+mark :1000000001
+committer example <example> 1200000060 +0000
+data 7
+modify
+
+M 100644 :2 ooga
+
+EOF
+
+echo "% import cvs2git dumps"
+hg init simplecvs
+hg -R simplecvs fastimport git-blob.dat git-dump.dat
+
+# Inspecting the hg repository is identical to test-fastimport-git.
+echo "% log"
+cd simplecvs
+hg glog -v
+
+echo "% manifest at rev 0"
+hg manifest -r0
+
+echo "% manifest at rev 1"
+hg manifest -r1
+
+echo "% cat foo.txt at rev 0"
+hg cat -r0 foo.txt
+echo "% cat foo.txt at rev 1"
+hg cat -r1 foo.txt
+
+echo "% cat ooga at rev 0"
+hg cat -r0 ooga
+echo "% cat ooga at rev 1"
+hg cat -r1 ooga

@@ -1,0 +1,42 @@
+% import cvs2git dumps
+Reading source: git-blob.dat
+Reading source: git-dump.dat
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 0
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 1
+Removing blob dir '/home/greg/src/hg-fastimport/tests/tmp/simplecvs/.hg/blobs' ...
+% log
+@  changeset:   1:be20ff2863a5
+|  tag:         tip
+|  user:        example <example>
+|  date:        Thu Jan 10 21:21:00 2008 +0000
+|  files:       ooga
+|  description:
+|  modify
+|
+|
+o  changeset:   0:5bb45e163687
+   user:        example <example>
+   date:        Thu Jan 10 21:20:00 2008 +0000
+   files:       foo.txt ooga
+   description:
+   initial revision
+
+
+% manifest at rev 0
+foo.txt
+ooga
+% manifest at rev 1
+foo.txt
+ooga
+% cat foo.txt at rev 0
+hello there
+% cat foo.txt at rev 1
+hello there
+% cat ooga at rev 0
+ooga booga
+% cat ooga at rev 1
+woof woof
+ooga booga
+blah blah
