@@ -3,3 +3,5 @@ syntax: glob
 *.orig
 *~
 *.pyc
+tests/*.err
+tests/tmp
