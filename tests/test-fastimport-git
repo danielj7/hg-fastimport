@@ -62,11 +62,12 @@ __EOF__
 
 echo "% import simple dump from git"
 hg init simplegit
-hg -R simplegit fastimport simplegit.dump
+hg -R simplegit fastimport simplegit.dump \
+  | sed "s|$HGTMP|HGTMP|g"
 
 echo "% hg log"
 cd simplegit
-hg glog
+hg glog -v
 
 echo "% manifest at rev 0"
 hg manifest -r0

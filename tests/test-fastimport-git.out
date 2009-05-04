@@ -1,0 +1,41 @@
+% import simple dump from git
+Reading source: simplegit.dump
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 0
+2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 1
+Removing blob dir 'HGTMP/test-fastimport-git/simplegit/.hg/blobs' ...
+% hg log
+@  changeset:   1:f5fb7ed5752d
+|  tag:         tip
+|  user:        Joe Contributor <joe@example.com>
+|  date:        Fri Jan 11 01:20:00 2008 +0400
+|  files:       ooga
+|  description:
+|  modify
+|
+|
+o  changeset:   0:56c9f26e6c12
+   user:        Example <example@example.org>
+   date:        Fri Jan 11 01:21:00 2008 +0400
+   files:       foo.txt ooga
+   description:
+   initial revision
+
+
+% manifest at rev 0
+foo.txt
+ooga
+% manifest at rev 1
+foo.txt
+ooga
+% cat foo.txt at rev 0
+hello there
+% cat foo.txt at rev 1
+hello there
+% cat ooga at rev 0
+ooga booga
+% cat ooga at rev 1
+woof woof
+ooga booga
+blah blah
