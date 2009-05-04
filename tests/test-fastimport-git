@@ -1,0 +1,85 @@
+#!/bin/sh
+
+# Test a dump of the style created by git fast-export.  Notable features
+# of this style:
+#   - one single stream
+#   - blobs right before the commit that use them
+#   - every blob and every commit have a mark
+#   - every commit has author and committer (even if they are the same)
+
+# The following dump was created by these commands, with author/
+# committer manually munged post-dump:
+#   mkdir t && cd t
+#   git init
+#   echo "hello there" > foo.txt
+#   echo "ooga booga" > ooga
+#   git add .
+#   git commit -m"initial revision"
+#   echo "woof woof\nooga booga\nblah blah" > ooga
+#   git commit --author="Joe Contributor <joe@example.com>" -a -m"modify"
+#   git fast-export --all
+
+. $TESTDIR/fastimport-common
+
+cat > simplegit.dump <<__EOF__
+blob
+mark :1
+data 12
+hello there
+
+blob
+mark :2
+data 11
+ooga booga
+
+reset refs/heads/master
+commit refs/heads/master
+mark :3
+author Example <example@example.org> 1200000060 -0400
+committer Example <example@example.org> 1200000060 -0400
+data 17
+initial revision
+M 100644 :1 foo.txt
+M 100644 :2 ooga
+
+blob
+mark :4
+data 31
+woof woof
+ooga booga
+blah blah
+
+commit refs/heads/master
+mark :5
+author Joe Contributor <joe@example.com> 1200000000 -0400
+committer Example <example@example.org> 1200000120 -0400
+data 7
+modify
+from :3
+M 100644 :4 ooga
+
+__EOF__
+
+echo "% import simple dump from git"
+hg init simplegit
+hg -R simplegit fastimport simplegit.dump
+
+echo "% hg log"
+cd simplegit
+hg glog
+
+echo "% manifest at rev 0"
+hg manifest -r0
+
+echo "% manifest at rev 1"
+hg manifest -r1
+
+echo "% cat foo.txt at rev 0"
+hg cat -r0 foo.txt
+echo "% cat foo.txt at rev 1"
+hg cat -r1 foo.txt
+
+echo "% cat ooga at rev 0"
+hg cat -r0 ooga
+echo "% cat ooga at rev 1"
+hg cat -r1 ooga
