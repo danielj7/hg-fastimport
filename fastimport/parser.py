@@ -405,7 +405,9 @@ class ImportParser(LineBasedParser):
     def _get_merge(self):
         """Parse a merge section."""
         line = self.next_line()
-        if line.startswith('merge '):
+        if line is None:                # EOF after last "merge" line
+            return None
+        elif line.startswith('merge '):
             return line[len('merge '):]
         else:
             #print "not a merge:", line
