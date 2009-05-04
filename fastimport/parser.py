@@ -437,7 +437,7 @@ class ImportParser(LineBasedParser):
                 next = self.input.readline()
                 self.lineno += 1
                 if len(next) > 1 or next != "\n":
-                    self.push_line(next)
+                    self.push_line(next[:-1])
                 return result
         else:
             self.abort(errors.MissingSection, required_for, section)
