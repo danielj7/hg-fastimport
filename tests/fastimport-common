@@ -1,0 +1,7 @@
+# Common code for test-fastimport-*
+
+cat > $HGRCPATH <<EOF
+[extensions]
+graphlog =
+fastimport = $TESTDIR/../fastimport
+EOF
