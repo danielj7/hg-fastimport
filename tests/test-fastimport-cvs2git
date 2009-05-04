@@ -69,7 +69,8 @@ EOF
 
 echo "% import cvs2git dumps"
 hg init simplecvs
-hg -R simplecvs fastimport git-blob.dat git-dump.dat
+hg -R simplecvs fastimport git-blob.dat git-dump.dat \
+  | sed "s|$HGTMP|HGTMP|g"
 
 # Inspecting the hg repository is identical to test-fastimport-git.
 echo "% log"
