@@ -1,6 +1,6 @@
 from mercurial import commands
 
-import parser
+from fastimport import parser
 import hgechoprocessor
 import hgimport
 
@@ -13,7 +13,7 @@ def fastimport(ui, repo, *sources, **opts):
             ui.write("Reading source: %s\n" % source)
             f = open(source)
             p = parser.ImportParser(f)
-            proc._process(p.iter_commands)
+            proc.process(p.iter_commands)
             f.close()
     finally:
         proc.teardown()

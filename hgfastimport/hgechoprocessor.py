@@ -20,8 +20,7 @@ This module provides core processing functionality including an abstract class
 for basing real processors on. See the processors package for examples.
 """
 
-
-import processor
+from fastimport import processor
 
 class HgEchoProcessor(processor.ImportProcessor):
     

@@ -29,9 +29,9 @@ import mercurial.hg
 import mercurial.commands
 from mercurial import util
 from mercurial.node import nullrev
-import processor
 
-import hgechoprocessor
+from fastimport import processor
+from hgfastimport import hgechoprocessor
 
 class HgImportProcessor(processor.ImportProcessor):
     
@@ -49,7 +49,12 @@ class HgImportProcessor(processor.ImportProcessor):
         self.numblobs = 0               # for progress reporting
         self.blobdir = None
 
+    def setup(self):
+        """Setup before processing any streams."""
+        pass
+
     def teardown(self):
+        """Cleanup after processing all streams."""
         if self.blobdir and os.path.exists(self.blobdir):
             self.ui.status("Removing blob dir %r ...\n" % self.blobdir)
             shutil.rmtree(self.blobdir)
@@ -104,11 +109,11 @@ class HgImportProcessor(processor.ImportProcessor):
         # Update to the first parent
         mercurial.hg.clean(self.repo, self.repo.lookup(first_parent))
         #self.ui.write("Bing\n")
-        if cmd.parents:
+        if cmd.merges:
             #self.ui.write("foo")
-            if len(cmd.parents) > 1:
+            if len(cmd.merges) > 1:
                 raise NotImplementedError("Can't handle more than two parents")
-            second_parent = self.committish_rev(cmd.parents[0])
+            second_parent = self.committish_rev(cmd.merges[0])
             #self.ui.write("Second parent: %s\n" % second_parent)
             mercurial.commands.debugsetparents(self.ui, self.repo, 
                 first_parent, second_parent)
@@ -132,10 +137,12 @@ class HgImportProcessor(processor.ImportProcessor):
         # optional)
         userinfo = cmd.author or cmd.committer
         user = "%s <%s>" % (userinfo[0], userinfo[1])
-        node = self.repo.rawcommit(files = commit_handler.filelist(),
-            text = cmd.message,
-            user = user,
-            date = self.convert_date(userinfo))
+
+        # XXX is this the right way to specify filename encoding?!?
+        files = [f.encode("utf-8") for f in commit_handler.filelist()]
+        date = self.convert_date(userinfo)
+        node = self.repo.rawcommit(
+            files=files, text=cmd.message, user=user, date=date)
         rev = self.repo.changelog.rev(node)
         if cmd.mark is not None:
             self.mark_map[":" + cmd.mark] = rev
