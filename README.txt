@@ -28,7 +28,7 @@ USAGE
 
 To use hg-fastimport, add a line like
 
-  fastimport = /path/to/hg-fastimport/fastimport
+  fastimport = /path/to/hg-fastimport/hgfastimport
 
 to the [extensions] section of your hgrc.
 
