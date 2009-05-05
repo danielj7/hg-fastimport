@@ -23,6 +23,26 @@ Mercurial, fast-import can become a "lingua franca" for the exchange of
 repository histories between revision control tools.
 
 
+DEPENDENCIES
+------------
+
+hg-fastimport depends on the pyfastimport library (which was extracted
+from bzr-fastimport).  pyfastimport lives on launchpad.net at
+
+  https://code.launchpad.net/~gward/bzr-fastimport/reusable
+
+If you have Bazaar on your local machine, you can get the code with
+
+  bzr branch lp:~gward/bzr-fastimport/reusable pyfastimport
+
+(If you know how to get a tarball out of launchpad.net, please let me
+know.  I don't see how to get the pyfastimport code without Bazaar.)
+
+Then make pyfastimport/fastimport available to hg-fastimport, e.g.
+
+  ln -s ../pyfastimport/fastimport .
+
+
 USAGE
 -----
 
