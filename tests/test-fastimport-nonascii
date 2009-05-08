@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# Test dumps with non-ASCII characters in various places.
+#
+# This file, including the fastimport dumps in it and the
+# associated .out file, are all encoded in UTF-8.
+
+. $TESTDIR/fastimport-common
+
+echo "% import dump with non-ASCII committer"
+cat > committer.dump <<__EOF__
+commit refs/heads/master
+mark :1
+committer Jean-François <jf@example.com> 1007132290 +0000
+data 4
+foo
+
+__EOF__
+
+hg init committer
+cd committer
+hg --traceback fastimport ../committer.dump
+echo "% log with non-ASCII committer"
+
+# Overide HGENCODING (it is set to 'ascii' by run-tests.py) to ensure
+# log is accurately printed.
+HGENCODING=utf-8 hg log
+cd ..
+
+echo "% import dump with non-ASCII author"
+cat > author.dump <<__EOF__
+commit refs/heads/master
+mark :1
+author Jürgen <juergen@example.org> 1250000000 +0400
+committer Dave <dave@example.org> 1250000030 +0400
+data 5
+blah
+
+__EOF__
+
+hg init author
+cd author
+hg --traceback fastimport ../author.dump
+echo "% log with non-ASCII author"
+HGENCODING=utf-8 hg log
+cd ..
+
+echo "% import dump with non-ASCII message"
+cat > message.dump <<__EOF__
+commit refs/heads/master
+mark :1
+committer Dave <dave@example.org> 1250000030 +0400
+data 60
+fix naïve implementation that Øle threw together for €5
+
+M 644 inline foo.txt
+data 6
+hello
+
+
+__EOF__
+
+hg init message
+cd message
+hg --traceback fastimport ../message.dump
+echo "% log with non-ASCII message"
+HGENCODING=utf-8 hg log
+echo "% manifest"
+hg manifest -r0
+echo "% contents of foo.txt"
+hg cat -r0 foo.txt
+cd ..
