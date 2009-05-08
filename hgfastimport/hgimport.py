@@ -138,11 +138,18 @@ class HgImportProcessor(processor.ImportProcessor):
         userinfo = cmd.author or cmd.committer
         user = "%s <%s>" % (userinfo[0], userinfo[1])
 
-        # XXX is this the right way to specify filename encoding?!?
-        files = [f.encode("utf-8") for f in commit_handler.filelist()]
+        # Blech: have to monkeypatch mercurial.encoding to ensure that
+        # everything under rawcommit() assumes the same encoding,
+        # regardless of current locale.
+        from mercurial import encoding
+        encoding.encoding = "UTF-8"
+
+        files = commit_handler.filelist()
+        assert type(cmd.message) is unicode
+        text = cmd.message.encode("utf-8") # XXX cmd.message is unicode
         date = self.convert_date(userinfo)
         node = self.repo.rawcommit(
-            files=files, text=cmd.message, user=user, date=date)
+            files=files, text=text, user=user, date=date)
         rev = self.repo.changelog.rev(node)
         if cmd.mark is not None:
             self.mark_map[":" + cmd.mark] = rev
