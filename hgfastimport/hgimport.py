@@ -42,6 +42,7 @@ class HgImportProcessor(processor.ImportProcessor):
         self.last_mark = None
         self.mark_map = {}
         self.branch_map = {}
+        self.last_commit = None         # CommitCommand object
         #self.tag_map = {}
         #self.tag_back_map = {}
         self.finished = False
@@ -96,11 +97,20 @@ class HgImportProcessor(processor.ImportProcessor):
             return self.branch_map[committish]
         
     def commit_handler(self, cmd):
-        if cmd.ref == "refs/heads/TAG.FIXUP":
-            #self.tag_back_map[cmd.mark] == first_parent
-            commit_handler = hgechoprocessor.HgEchoCommitHandler(cmd, self.ui, self.repo, **self.opts)
-            commit_handler.process()
-            return
+        # XXX this assumes the fixup branch name used by cvs2git.  In
+        # contrast, git-fast-import(1) recommends "TAG_FIXUP" (not under
+        # refs/heads), and implies that it can be called whatever the
+        # creator of the fastimport dump wants to call it.  So the name
+        # of the fixup branch should be configurable!
+        fixup = (cmd.ref == "refs/heads/TAG.FIXUP")
+
+        if fixup and self.last_commit is not None:
+            # If this is a fixup commit, pretend it is on the same
+            # branch as the previous commit.  This gives sensible
+            # behaviour for selecting the first parent and for
+            # determining the Mercurial branch name.
+            cmd.ref = self.last_commit.ref
+
         if cmd.from_:
             first_parent = self.committish_rev(cmd.from_)
         else:
@@ -153,7 +163,9 @@ class HgImportProcessor(processor.ImportProcessor):
         rev = self.repo.changelog.rev(node)
         if cmd.mark is not None:
             self.mark_map[":" + cmd.mark] = rev
-        self.branch_map[cmd.ref] = rev
+        if not fixup:
+            self.branch_map[cmd.ref] = rev
+            self.last_commit = cmd
         self.ui.write("Done commit of rev %d\n" % rev)
         #self.ui.write("%s\n" % self.mark_map)
 

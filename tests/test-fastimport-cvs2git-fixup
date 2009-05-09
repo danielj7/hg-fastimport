@@ -1,0 +1,136 @@
+#!/bin/sh
+
+# Test a dump created by cvs2git from a CVS repository with branches and
+# tags.  Specifically, we're looking at the creation of a new branch
+# REL-2-2-3 where the branch point is tagged REL-2-2-3-P1.
+
+# Rather than create an artificial example, this is derived from
+# a real-life CVS repository.
+
+. $TESTDIR/fastimport-common
+
+cat > git-blob.dat <<EOF
+blob
+mark :2308
+data 5
+boo!
+
+blob
+mark :14693
+data 18
+# Doxyfile 1.2.14
+
+blob
+mark :11363
+data 6
+hello
+
+EOF
+
+# XXX this is the dump that cvs2git actually produces.  Subtle
+# bogosities:
+#  - commit 1619 has no first parent, but the "merge" directive
+#    (second parent) points to the commit that should be its first parent
+#  - commit 1620 should have 1619 as its first parent, but 1619 is
+#    set to the second parent... and there is no first parent
+#
+# I'm not using this one; I'm just recording it here to vent about
+# cvs2git.  See below for the dump that I want cvs2git to produce,
+# and the one that is correctly handled by hg-fastimport.
+#cat > git-dump.dat <<EOF
+cat > /dev/null <<EOF
+commit refs/heads/master
+mark :1000000373
+committer Example <example> 991793180 +0000
+data 15
+added Makefile
+
+M 100644 :2308 Makefile
+
+commit refs/heads/REL-2-2-3
+mark :1000001619
+committer cvs2git <cvs2git> 1022533494 +0000
+data 47
+create branch 'REL-2-2-3' (manufactured commit)
+merge :1000000373
+M 100644 :2308 Makefile
+
+commit refs/heads/TAG.FIXUP
+mark :1000001620
+committer cvs2git <cvs2git> 1022533495 +0000
+data 47
+create tag 'REL-2-2-3-P1' (manufactured commit)
+merge :1000001619
+M 100644 :14693 Tools/Debug/C++/DebugCpp.doxygen
+
+reset refs/tags/REL-2-2-3-P1
+from :1000001620
+reset refs/heads/TAG.FIXUP
+
+commit refs/heads/master
+mark :1000001621
+committer Other <other@example.com> 1022536868 +0000
+data 18
+added iostream.h
+
+M 100644 :11363 main.cpp
+EOF
+
+# XXX this is the dump that I think cvs2git *should* produce, not what
+# it actually does produce (hmmm)
+cat > git-dump.dat <<EOF
+commit refs/heads/master
+mark :1000000373
+committer Example <example> 991793180 +0000
+data 15
+added Makefile
+
+M 100644 :2308 Makefile
+
+commit refs/heads/REL-2-2-3
+mark :1000001619
+committer cvs2git <cvs2git> 1022533494 +0000
+data 47
+create branch 'REL-2-2-3' (manufactured commit)
+from :1000000373
+M 100644 :2308 Makefile
+
+commit refs/heads/TAG.FIXUP
+mark :1000001620
+committer cvs2git <cvs2git> 1022533495 +0000
+data 47
+create tag 'REL-2-2-3-P1' (manufactured commit)
+from :1000001619
+M 100644 :14693 Tools/Debug/C++/DebugCpp.doxygen
+
+reset refs/tags/REL-2-2-3-P1
+from :1000001620
+reset refs/heads/TAG.FIXUP
+
+commit refs/heads/master
+mark :1000001621
+committer Other <other@example.com> 1022536868 +0000
+data 18
+added iostream.h
+
+M 100644 :11363 main.cpp
+EOF
+
+echo "% import cvs2git with branch/tag"
+set -e
+hg init realcvs
+hg -R realcvs fastimport git-blob.dat git-dump.dat \
+  | sed "s|$HGTMP|HGTMP|g"
+
+echo "% hg glog"
+cd realcvs
+hg glog -v
+
+echo "% hg branches"
+hg branches
+
+echo "% hg heads -v"
+hg heads
+
+echo "% hg tags -v"
+hg tags
