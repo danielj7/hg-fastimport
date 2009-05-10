@@ -9,60 +9,54 @@ Done commit of rev 1
 Done commit of rev 2
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 Done commit of rev 3
+updating tags
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs/.hg/blobs' ...
 % hg glog
-@  changeset:   3:158529dd7d57
-|  tag:         tip
-|  parent:      0:8c270455072a
-|  user:        Other <other@example.com>
-|  date:        Mon May 27 22:01:08 2002 +0000
-|  files:       main.cpp
-|  description:
-|  added iostream.h
+@  rev:    4
+|  author: convert-repo
+|  branch: ''  tags:   tip
+|  files:  .hgtags
+|  desc:   update tags
 |
+o  rev:    3
+|  author: Other <other@example.com>
+|  branch: ''  tags:
+|  files:  main.cpp
+|  desc:   added iostream.h
 |
-| o  changeset:   2:9c706dffba0e
-| |  branch:      REL-2-2-3
-| |  user:        cvs2git <cvs2git>
-| |  date:        Mon May 27 21:04:55 2002 +0000
-| |  files:       Tools/Debug/C++/DebugCpp.doxygen
-| |  description:
-| |  create tag 'REL-2-2-3-P1' (manufactured commit)
+| o  rev:    2
+| |  author: cvs2git <cvs2git>
+| |  branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
+| |  files:  Tools/Debug/C++/DebugCpp.doxygen
+| |  desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 | |
-| |
-| o  changeset:   1:fd354e4cf420
-|/   branch:      REL-2-2-3
-|    user:        cvs2git <cvs2git>
-|    date:        Mon May 27 21:04:54 2002 +0000
-|    description:
-|    create branch 'REL-2-2-3' (manufactured commit)
+| o  rev:    1
+|/   author: cvs2git <cvs2git>
+|    branch: 'REL-2-2-3'  tags:
+|    files:
+|    desc:   create branch 'REL-2-2-3' (manufactured commit)
 |
-|
-o  changeset:   0:8c270455072a
-   user:        Example <example>
-   date:        Wed Jun 06 02:06:20 2001 +0000
-   files:       Makefile
-   description:
-   added Makefile
-
+o  rev:    0
+   author: Example <example>
+   branch: ''  tags:
+   files:  Makefile
+   desc:   added Makefile
 
 % hg branches
-default                        3:158529dd7d57
 REL-2-2-3                      2:9c706dffba0e
 % hg heads -v
-changeset:   3:158529dd7d57
-tag:         tip
-parent:      0:8c270455072a
-user:        Other <other@example.com>
-date:        Mon May 27 22:01:08 2002 +0000
-summary:     added iostream.h
+rev:    4
+author: convert-repo
+branch: ''  tags:   tip
+files:  .hgtags
+desc:   update tags
 
-changeset:   2:9c706dffba0e
-branch:      REL-2-2-3
-user:        cvs2git <cvs2git>
-date:        Mon May 27 21:04:55 2002 +0000
-summary:     create tag 'REL-2-2-3-P1' (manufactured commit)
+rev:    2
+author: cvs2git <cvs2git>
+branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
+files:  Tools/Debug/C++/DebugCpp.doxygen
+desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 
 % hg tags -v
-tip                                3:158529dd7d57
 REL-2-2-3-P1                       2:9c706dffba0e

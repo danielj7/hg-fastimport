@@ -28,7 +28,7 @@ import shutil
 import mercurial.hg
 import mercurial.commands
 from mercurial import util
-from mercurial.node import nullrev
+from mercurial.node import nullrev, hex
 
 from fastimport import processor
 from hgfastimport import hgechoprocessor
@@ -36,12 +36,14 @@ from hgfastimport import hgechoprocessor
 class HgImportProcessor(processor.ImportProcessor):
     
     def __init__(self, ui, repo, **opts):
+        super(HgImportProcessor, self).__init__()
         self.ui = ui
         self.repo = repo
         self.opts = opts
         self.last_commit = None         # CommitCommand object
-        self.mark_map = {}              # map mark (e.g. ":1") to changelog node ID(?)
-        self.branch_map = {}            # map git branch name to changelog node ID(?)
+        self.mark_map = {}              # map mark (e.g. ":1") to revision number
+        self.branch_map = {}            # map git branch name to revision number
+        self.lightweight_tags = []      # list of (ref, mark) tuples
 
         self.numblobs = 0               # for progress reporting
         self.blobdir = None
@@ -52,6 +54,13 @@ class HgImportProcessor(processor.ImportProcessor):
 
     def teardown(self):
         """Cleanup after processing all streams."""
+        # Hmmm: this isn't really a cleanup step, it's a post-processing
+        # step.  But we currently have one processor per input
+        # stream... despite the fact that state like mark_map,
+        # branch_map, and lightweight_tags really should span input
+        # streams.
+        self.write_lightweight_tags()
+
         if self.blobdir and os.path.exists(self.blobdir):
             self.ui.status("Removing blob dir %r ...\n" % self.blobdir)
             shutil.rmtree(self.blobdir)
@@ -180,11 +189,50 @@ class HgImportProcessor(processor.ImportProcessor):
         return "%d %d" % res
         
     def reset_handler(self, cmd):
-        if cmd.from_ is not None:
-            self.branch_map[cmd.ref] = self.committish_rev(cmd.from_)
+        if cmd.ref.startswith("refs/heads/"):
+            # The usual case for 'reset': (re)create the named branch.
+            # XXX what should we do if cmd.from_ is None?
+            if cmd.from_ is not None:
+                self.branch_map[cmd.ref] = self.committish_rev(cmd.from_)
+            #else:
+            #    # XXX filename? line number?
+            #    self.ui.warn("ignoring branch reset with no 'from'\n")
+        elif cmd.ref.startswith("refs/tags/"):
+            # Create a "lightweight tag" in Git terms.  As I understand
+            # it, that's a tag with no description and no history --
+            # rather like CVS tags.  cvs2git turns CVS tags into Git
+            # lightweight tags, so we should make sure they become
+            # Mercurial tags.  But we don't have to fake a history for
+            # them; save them up for the end.
+            self.lightweight_tags.append((cmd.ref, cmd.from_))
 
     def tag_handler(self, cmd):
         pass
+
+    def write_lightweight_tags(self):
+        if not self.lightweight_tags:   # avoid writing empty .hgtags
+            return
+
+        # XXX what about duplicate tags?  lightweight_tags is
+        # deliberately a list, to preserve order ... but do we need to
+        # worry about repeated tags?  (Certainly not for cvs2git output,
+        # since CVS has no tag history.)
+
+        # Create Mercurial tags from git-style "lightweight tags" in the
+        # input stream.
+        self.ui.status("updating tags\n")
+        mercurial.hg.clean(self.repo, self.repo.lookup("default"))
+        tagfile = open(self.repo.wjoin(".hgtags"), "ab")
+        for (ref, mark) in self.lightweight_tags:
+            tag = ref[len("refs/tags/"):]
+            rev = self.mark_map[mark]
+            node = self.repo.changelog.node(rev)
+            tagfile.write("%s %s\n" % (hex(node), tag))
+        tagfile.close()
+
+        files = [".hgtags"]
+        self.repo.rawcommit(
+            files=files, text="update tags", user="convert-repo", date=None)
 
 class HgImportCommitHandler(processor.CommitHandler):
 

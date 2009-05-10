@@ -124,13 +124,16 @@ hg -R realcvs fastimport git-blob.dat git-dump.dat \
 
 echo "% hg glog"
 cd realcvs
-hg glog -v
+template="rev:    {rev}\nauthor: {author}\nbranch: '{branches}'  tags:   {tags}\nfiles:  {files}\ndesc:   {desc}\n\n"
+hg glog -v --template="$template"
 
 echo "% hg branches"
-hg branches
+# Exclude default since its changeset ID is different with every run.
+# (Same thing with tags and tip below.)
+hg branches | grep -v "^default"
 
 echo "% hg heads -v"
-hg heads
+hg heads --template="$template"
 
 echo "% hg tags -v"
-hg tags
+hg tags | grep -v "^tip"
