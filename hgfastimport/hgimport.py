@@ -39,13 +39,9 @@ class HgImportProcessor(processor.ImportProcessor):
         self.ui = ui
         self.repo = repo
         self.opts = opts
-        self.last_mark = None
-        self.mark_map = {}
-        self.branch_map = {}
         self.last_commit = None         # CommitCommand object
-        #self.tag_map = {}
-        #self.tag_back_map = {}
-        self.finished = False
+        self.mark_map = {}              # map mark (e.g. ":1") to changelog node ID(?)
+        self.branch_map = {}            # map git branch name to changelog node ID(?)
 
         self.numblobs = 0               # for progress reporting
         self.blobdir = None
@@ -183,7 +179,6 @@ class HgImportProcessor(processor.ImportProcessor):
             self.branch_map[cmd.ref] = self.committish_rev(cmd.from_)
 
     def tag_handler(self, cmd):
-        # self.tag_map[cmd.id] = self.tag_back_map[cmd.from_]
         pass
 
 class HgImportCommitHandler(processor.CommitHandler):
