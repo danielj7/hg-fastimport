@@ -113,13 +113,10 @@ class HgImportProcessor(processor.ImportProcessor):
             first_parent = self.committish_rev(cmd.from_)
         else:
             first_parent = self.branch_map.get(cmd.ref, nullrev)
-        #self.ui.write("Bing\n")
         if cmd.merges:
-            #self.ui.write("foo")
             if len(cmd.merges) > 1:
                 raise NotImplementedError("Can't handle more than two parents")
             second_parent = self.committish_rev(cmd.merges[0])
-            #self.ui.write("Second parent: %s\n" % second_parent)
         else:
             second_parent = nullrev
 
@@ -144,7 +141,6 @@ class HgImportProcessor(processor.ImportProcessor):
         mercurial.commands.debugsetparents(
             self.ui, self.repo, first_parent, second_parent)
 
-        #self.ui.write("Bing\n")
         if cmd.ref == "refs/heads/master":
             branch = "default"
         elif fixup and first_parent is not nullrev:
@@ -154,15 +150,10 @@ class HgImportProcessor(processor.ImportProcessor):
             branch = self.repo.changectx(first_parent).branch()
         else:
             branch = cmd.ref[len("refs/heads/"):]
-        #self.ui.write("Branch: %s\n" % branch)
         self.repo.dirstate.setbranch(branch)
-        #self.ui.write("Bing\n")
-        #print "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
         commit_handler = HgImportCommitHandler(
             self, cmd, self.ui, self.repo, **self.opts)
         commit_handler.process()
-        #print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-        #self.ui.write(cmd.dump_str(verbose=True))
 
         # in case we are converting from git or bzr, prefer author but
         # fallback to committer (committer is required, author is
@@ -189,7 +180,6 @@ class HgImportProcessor(processor.ImportProcessor):
             self.branch_map[cmd.ref] = rev
             self.last_commit = cmd
         self.ui.write("Done commit of rev %d\n" % rev)
-        #self.ui.write("%s\n" % self.mark_map)
 
     def convert_date(self, c):
         res = (int(c[2]), int(c[3]))
