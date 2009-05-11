@@ -130,11 +130,6 @@ class HgImportProcessor(processor.ImportProcessor):
                 raise NotImplementedError("Can't handle more than two parents")
             second_parent = self.committish_rev(cmd.merges[0])
             #self.ui.write("Second parent: %s\n" % second_parent)
-            if second_parent == first_parent:
-                raise util.Abort("bad fastimport dump: commit %s has %s as "
-                                 "both parents"
-                                 % (cmd.id, cmd.merges[0]))
-
             mercurial.commands.debugsetparents(self.ui, self.repo, 
                 first_parent, second_parent)
         #self.ui.write("Bing\n")
