@@ -1,4 +1,5 @@
-% import cvs2git with branch/tag
+----------------------------------------
+% import git-dump-1.dat
 Reading source: git-blob.dat
 Reading source: git-dump-1.dat
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -11,8 +12,8 @@ Done commit of rev 2
 Done commit of rev 3
 updating tags
 1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs/.hg/blobs' ...
-% hg glog
+Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs.1/.hg/blobs' ...
+% hg glog (git-dump-1.dat)
 @  rev:    4
 |  author: convert-repo
 |  branch: ''  tags:   tip
@@ -43,9 +44,9 @@ o  rev:    0
    files:  Makefile
    desc:   added Makefile
 
-% hg branches
+% hg branches (git-dump-1.dat)
 REL-2-2-3                      2:9c706dffba0e
-% hg heads -v
+% hg heads -v (git-dump-1.dat)
 rev:    4
 author: convert-repo
 branch: ''  tags:   tip
@@ -58,5 +59,68 @@ branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
 files:  Tools/Debug/C++/DebugCpp.doxygen
 desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 
-% hg tags -v
+% hg tags -v (git-dump-1.dat)
+REL-2-2-3-P1                       2:9c706dffba0e
+----------------------------------------
+% import git-dump-2.dat
+Reading source: git-blob.dat
+Reading source: git-dump-2.dat
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 0
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 1
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 2
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Done commit of rev 3
+updating tags
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs.2/.hg/blobs' ...
+% hg glog (git-dump-2.dat)
+@  rev:    4
+|  author: convert-repo
+|  branch: ''  tags:   tip
+|  files:  .hgtags
+|  desc:   update tags
+|
+o  rev:    3
+|  author: Other <other@example.com>
+|  branch: ''  tags:
+|  files:  main.cpp
+|  desc:   added iostream.h
+|
+| o  rev:    2
+| |  author: cvs2git <cvs2git>
+| |  branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
+| |  files:  Tools/Debug/C++/DebugCpp.doxygen
+| |  desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
+| |
+| o  rev:    1
+|/   author: cvs2git <cvs2git>
+|    branch: 'REL-2-2-3'  tags:
+|    files:
+|    desc:   create branch 'REL-2-2-3' (manufactured commit)
+|
+o  rev:    0
+   author: Example <example>
+   branch: ''  tags:
+   files:  Makefile
+   desc:   added Makefile
+
+% hg branches (git-dump-2.dat)
+REL-2-2-3                      2:9c706dffba0e
+% hg heads -v (git-dump-2.dat)
+rev:    4
+author: convert-repo
+branch: ''  tags:   tip
+files:  .hgtags
+desc:   update tags
+
+rev:    2
+author: cvs2git <cvs2git>
+branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
+files:  Tools/Debug/C++/DebugCpp.doxygen
+desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
+
+% hg tags -v (git-dump-2.dat)
 REL-2-2-3-P1                       2:9c706dffba0e

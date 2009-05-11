@@ -116,24 +116,32 @@ added iostream.h
 M 100644 :11363 main.cpp
 EOF
 
-echo "% import cvs2git with branch/tag"
-set -e
-hg init realcvs
-hg -R realcvs fastimport git-blob.dat git-dump-1.dat \
-  | sed "s|$HGTMP|HGTMP|g"
+# Test that both dumps work (they should produce identical output).
+#for dump in git-dump-1.dat git-dump-2.dat; do
+for i in 1 2 ; do
+    dump=git-dump-$i.dat
+    echo "----------------------------------------"
+    echo "% import $dump"
+    set -e
+    repo=realcvs.$i
+    hg init $repo
+    hg -R $repo fastimport git-blob.dat $dump \
+      | sed "s|$HGTMP|HGTMP|g"
 
-echo "% hg glog"
-cd realcvs
-template="rev:    {rev}\nauthor: {author}\nbranch: '{branches}'  tags:   {tags}\nfiles:  {files}\ndesc:   {desc}\n\n"
-hg glog -v --template="$template"
+    echo "% hg glog ($dump)"
+    cd $repo
+    template="rev:    {rev}\nauthor: {author}\nbranch: '{branches}'  tags:   {tags}\nfiles:  {files}\ndesc:   {desc}\n\n"
+    hg glog -v --template="$template"
 
-echo "% hg branches"
-# Exclude default since its changeset ID is different with every run.
-# (Same thing with tags and tip below.)
-hg branches | grep -v "^default"
+    echo "% hg branches ($dump)"
+    # Exclude default since its changeset ID is different with every run.
+    # (Same thing with tags and tip below.)
+    hg branches | grep -v "^default"
 
-echo "% hg heads -v"
-hg heads --template="$template"
+    echo "% hg heads -v ($dump)"
+    hg heads --template="$template"
 
-echo "% hg tags -v"
-hg tags | grep -v "^tip"
+    echo "% hg tags -v ($dump)"
+    hg tags | grep -v "^tip"
+    cd ..
+done
