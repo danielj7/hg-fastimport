@@ -109,20 +109,10 @@ class HgImportProcessor(processor.ImportProcessor):
         # of the fixup branch should be configurable!
         fixup = (cmd.ref == "refs/heads/TAG.FIXUP")
 
-        if fixup and self.last_commit is not None:
-            # If this is a fixup commit, pretend it is on the same
-            # branch as the previous commit.  This gives sensible
-            # behaviour for selecting the first parent and for
-            # determining the Mercurial branch name.
-            cmd.ref = self.last_commit.ref
-
         if cmd.from_:
             first_parent = self.committish_rev(cmd.from_)
         else:
             first_parent = self.branch_map.get(cmd.ref, nullrev)
-        #self.ui.write("First parent: %s\n" % first_parent)
-        # Update to the first parent
-        mercurial.hg.clean(self.repo, self.repo.lookup(first_parent))
         #self.ui.write("Bing\n")
         if cmd.merges:
             #self.ui.write("foo")
@@ -130,11 +120,38 @@ class HgImportProcessor(processor.ImportProcessor):
                 raise NotImplementedError("Can't handle more than two parents")
             second_parent = self.committish_rev(cmd.merges[0])
             #self.ui.write("Second parent: %s\n" % second_parent)
-            mercurial.commands.debugsetparents(self.ui, self.repo, 
-                first_parent, second_parent)
+        else:
+            second_parent = nullrev
+
+        if first_parent is nullrev and second_parent is not nullrev:
+            # First commit on a new branch that has 'merge' but no 'from':
+            # special case meaning branch starts with no files; the contents of
+            # the first commit (this one) determine the list of files at branch
+            # time.
+            first_parent = second_parent
+            second_parent = nullrev
+            no_files = True             # XXX not handled
+
+        self.ui.debug("commit %s: first_parent = %r, second_parent = %r\n"
+                      % (cmd.id, first_parent, second_parent))
+        assert ((first_parent != second_parent) or
+                (first_parent == second_parent == -1)), \
+               ("commit %s: first_parent == second parent = %r"
+                % (cmd.id, first_parent))
+
+        # Update to the first parent
+        mercurial.hg.clean(self.repo, self.repo.lookup(first_parent))
+        mercurial.commands.debugsetparents(
+            self.ui, self.repo, first_parent, second_parent)
+
         #self.ui.write("Bing\n")
         if cmd.ref == "refs/heads/master":
             branch = "default"
+        elif fixup and first_parent is not nullrev:
+            # If this is a fixup commit, pretend it happened on the same branch
+            # as its first parent.  (We don't want a Mercurial named branch
+            # called "TAG.FIXUP" in the output repository.)
+            branch = self.repo.changectx(first_parent).branch()
         else:
             branch = cmd.ref[len("refs/heads/"):]
         #self.ui.write("Branch: %s\n" % branch)
@@ -189,6 +206,12 @@ class HgImportProcessor(processor.ImportProcessor):
             # XXX what should we do if cmd.from_ is None?
             if cmd.from_ is not None:
                 self.branch_map[cmd.ref] = self.committish_rev(cmd.from_)
+            else:
+                # pretend the branch never existed... is this right?!?
+                try:
+                    del self.branch_map[cmd.ref]
+                except KeyError:
+                    pass
             #else:
             #    # XXX filename? line number?
             #    self.ui.warn("ignoring branch reset with no 'from'\n")

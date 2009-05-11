@@ -27,18 +27,18 @@ hello
 
 EOF
 
-# XXX this is the dump that cvs2git actually produces.  Subtle
-# bogosities:
+# This is the dump that cvs2git actually produces.  There are some
+# oddities to it:
 #  - commit 1619 has no first parent, but the "merge" directive
 #    (second parent) points to the commit that should be its first parent
 #  - commit 1620 should have 1619 as its first parent, but 1619 is
 #    set to the second parent... and there is no first parent
 #
-# I'm not using this one; I'm just recording it here to vent about
-# cvs2git.  See below for the dump that I want cvs2git to produce,
-# and the one that is correctly handled by hg-fastimport.
-#cat > git-dump.dat <<EOF
-cat > /dev/null <<EOF
+# but git-fast-import accepts it, and the spec allows it.  Therefore,
+# hg-fastimport must accept it and handle it correctly.
+
+#cat > /dev/null <<EOF
+cat > git-dump-1.dat <<EOF
 commit refs/heads/master
 mark :1000000373
 committer Example <example> 991793180 +0000
@@ -76,9 +76,9 @@ added iostream.h
 M 100644 :11363 main.cpp
 EOF
 
-# XXX this is the dump that I think cvs2git *should* produce, not what
-# it actually does produce (hmmm)
-cat > git-dump.dat <<EOF
+# This is another way of expressing the same thing.  git-fast-import
+# treats them the same, therefore hg-fastimport should too.
+cat > git-dump-2.dat <<EOF
 commit refs/heads/master
 mark :1000000373
 committer Example <example> 991793180 +0000
@@ -119,7 +119,7 @@ EOF
 echo "% import cvs2git with branch/tag"
 set -e
 hg init realcvs
-hg -R realcvs fastimport git-blob.dat git-dump.dat \
+hg -R realcvs fastimport git-blob.dat git-dump-1.dat \
   | sed "s|$HGTMP|HGTMP|g"
 
 echo "% hg glog"
