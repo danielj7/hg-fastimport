@@ -1,31 +1,35 @@
 % import dump with non-ASCII committer
-Reading source: ../committer.dump
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
+scanning source...
+sorting...
+converting...
+0 foo
 % log with non-ASCII committer
-changeset:   0:d06142abc8ab
+changeset:   0:f44a7ebfef4b
 tag:         tip
 user:        Jean-François <jf@example.com>
 date:        Fri Nov 30 14:58:10 2001 +0000
 summary:     foo
 
 % import dump with non-ASCII author
-Reading source: ../author.dump
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
+scanning source...
+sorting...
+converting...
+0 blah
 % log with non-ASCII author
-changeset:   0:9a86e5e78bae
+changeset:   0:e10eff2ea202
 tag:         tip
 user:        Jürgen <juergen@example.org>
 date:        Tue Aug 11 10:13:20 2009 -0400
 summary:     blah
 
 % import dump with non-ASCII message
-Reading source: ../message.dump
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
+scanning source...
+sorting...
+converting...
+0 fix na?ve implementation that ?le threw together for ?5
+Removing blob dir 'HGTMP/test-fastimport-nonascii/message/.hg/blobs' ...
 % log with non-ASCII message
-changeset:   0:0700c36eef88
+changeset:   0:cfd47dca9906
 tag:         tip
 user:        Dave <dave@example.org>
 date:        Tue Aug 11 10:13:50 2009 -0400

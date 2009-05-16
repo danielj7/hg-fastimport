@@ -1,23 +1,22 @@
 % import cvs2git dumps
-Reading source: git-blob.dat
-Reading source: git-dump.dat
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
-2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 1
+scanning source...
+sorting...
+converting...
+1 initial revision
+0 modify
 Removing blob dir 'HGTMP/test-fastimport-cvs2git/simplecvs/.hg/blobs' ...
 % log
-@  changeset:   1:be20ff2863a5
+o  changeset:   1:f5f5b99690f9
 |  tag:         tip
-|  user:        example <example>
+|  user:        example
 |  date:        Thu Jan 10 21:21:00 2008 +0000
 |  files:       ooga
 |  description:
 |  modify
 |
 |
-o  changeset:   0:5bb45e163687
-   user:        example <example>
+o  changeset:   0:602b297b695e
+   user:        example
    date:        Thu Jan 10 21:20:00 2008 +0000
    files:       foo.txt ooga
    description:

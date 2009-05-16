@@ -1,17 +1,18 @@
 % importing
-Reading source: ../simple.dump
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
-2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 1
+scanning source...
+sorting...
+converting...
+1 initial revision
+0 add a line
+Removing blob dir 'HGTMP/test-fastimport-simple/simple/.hg/blobs' ...
 % hg log
-changeset:   1:494d62fb22a9
+changeset:   1:777dd8cf7297
 tag:         tip
 user:        Example <example@example.org>
 date:        Thu Jan 10 21:20:01 2008 +0000
 summary:     add a line
 
-changeset:   0:43689aeeccc7
+changeset:   0:1e4114af38f1
 user:        Example <example@example.org>
 date:        Thu Jan 10 21:20:00 2008 +0000
 summary:     initial revision

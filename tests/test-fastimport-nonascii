@@ -17,13 +17,18 @@ foo
 
 __EOF__
 
+# N.B. it's import to run fastimport without overriding HGENCODING,
+# because we need to be sure that UTF-8 metadata is correctly converted
+# even when the default encoding is ASCII.  The catch is that the
+# converted commit messages will be mangled as they are printed to
+# stdout.  That's OK.  The real test is when we run hg log, and there we
+# set HGENCODING to ensure that hg accurately prints what's in the
+# repository.
+
 hg init committer
 cd committer
 hg --traceback fastimport ../committer.dump
 echo "% log with non-ASCII committer"
-
-# Overide HGENCODING (it is set to 'ascii' by run-tests.py) to ensure
-# log is accurately printed.
 HGENCODING=utf-8 hg log
 cd ..
 
@@ -62,7 +67,7 @@ __EOF__
 
 hg init message
 cd message
-hg --traceback fastimport ../message.dump
+hg --traceback fastimport ../message.dump | sed "s|$HGTMP|HGTMP|g"
 echo "% log with non-ASCII message"
 HGENCODING=utf-8 hg log
 echo "% manifest"

@@ -1,39 +1,35 @@
 % import
-Reading source: ../anonbranch.dump
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 0
-2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 1
-1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 2
-0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 3
-2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 4
-1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 5
-2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-Done commit of rev 6
+scanning source...
+sorting...
+converting...
+6 initial revision
+5 modify foo, add bla
+4 add oog
+3 modify bla
+2 remove oog
+1 modify foo
+0 merge
+Removing blob dir 'HGTMP/test-fastimport-anonbranch/anonbranch/.hg/blobs' ...
 % log
-@    6:c454087588c4
+o    6:ca2d9acb975f
 |\   merge
 | |
-| o  5:d7502914e05c
+| o  5:426c5bd79694
 | |  modify foo
 | |
-o |  4:5dde14f70320
+o |  4:32f018ede0f8
 | |  remove oog
 | |
-| o  3:66562011aee8
+| o  3:7c78b201cf49
 | |  modify bla
 | |
-o |  2:3851fabfd46c
+o |  2:b4dd3ea3dee1
 |/   add oog
 |
-o  1:c09a5b11c17e
+o  1:60da203876bc
 |  modify foo, add bla
 |
-o  0:67886358f17d
+o  0:2eab317db71a
    initial revision
 
 % manifest at rev 0
@@ -56,14 +52,14 @@ bar
 % contents of bla at rev 6
 blah blah
 % diff merge with first parent (rev 4:6)
-diff -r 5dde14f70320 -r c454087588c4 bla
+diff -r 32f018ede0f8 -r ca2d9acb975f bla
 --- a/bla	Thu Jan 10 21:23:00 2008 +0000
 +++ b/bla	Thu Jan 10 21:24:00 2008 +0000
 @@ -1,1 +1,1 @@
 -bla
 +blah blah
 % diff merge with second parent (rev 5:6)
-diff -r d7502914e05c -r c454087588c4 foo
+diff -r 426c5bd79694 -r ca2d9acb975f foo
 --- a/foo	Thu Jan 10 21:23:30 2008 +0000
 +++ b/foo	Thu Jan 10 21:24:00 2008 +0000
 @@ -1,1 +1,1 @@

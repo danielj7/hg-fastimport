@@ -35,7 +35,7 @@ rm -rf simple
 echo "% importing"
 hg init simple
 cd simple
-hg fastimport ../simple.dump
+hg fastimport ../simple.dump | sed "s|$HGTMP|HGTMP|g"
 
 # It's OK for the log to include changeset IDs, since the fastimport
 # dump includes everything used to compute them, so they should be the
