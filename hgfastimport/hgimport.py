@@ -88,6 +88,7 @@ class fastimport_source(common.converter_source):
 
     def gettags(self):
         """Return the tags as a dictionary of name: revision"""
+        # oops, this loses order
         return dict(self.processor.tags)
     
     def getchangedfiles(self, rev, i):
