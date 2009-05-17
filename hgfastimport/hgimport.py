@@ -113,7 +113,7 @@ class fastimport_source(common.converter_source):
             self.ui.debug("reading fastimport source: %s\n" % source)
             f = open(source)
             p = parser.ImportParser(f)
-            self.processor.process(p.iter_commands)
+            self.processor.process(p.parse)
             f.close()
 
         self.parsed = True

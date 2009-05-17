@@ -11,25 +11,25 @@ converting...
 0 merge
 Removing blob dir 'HGTMP/test-fastimport-anonbranch/anonbranch/.hg/blobs' ...
 % log
-o    6:ca2d9acb975f
+o    6:0d34157f0c2f
 |\   merge
 | |
-| o  5:426c5bd79694
+| o  5:b1437926634f
 | |  modify foo
 | |
-o |  4:32f018ede0f8
+o |  4:3f6a069667a2
 | |  remove oog
 | |
-| o  3:7c78b201cf49
+| o  3:6c4eac9a38c2
 | |  modify bla
 | |
-o |  2:b4dd3ea3dee1
+o |  2:26171fc4359c
 |/   add oog
 |
-o  1:60da203876bc
+o  1:eda61aa1eb80
 |  modify foo, add bla
 |
-o  0:2eab317db71a
+o  0:984734388051
    initial revision
 
 % manifest at rev 0
@@ -52,14 +52,14 @@ bar
 % contents of bla at rev 6
 blah blah
 % diff merge with first parent (rev 4:6)
-diff -r 32f018ede0f8 -r ca2d9acb975f bla
+diff -r 3f6a069667a2 -r 0d34157f0c2f bla
 --- a/bla	Thu Jan 10 21:23:00 2008 +0000
 +++ b/bla	Thu Jan 10 21:24:00 2008 +0000
 @@ -1,1 +1,1 @@
 -bla
 +blah blah
 % diff merge with second parent (rev 5:6)
-diff -r 426c5bd79694 -r ca2d9acb975f foo
+diff -r b1437926634f -r 0d34157f0c2f foo
 --- a/foo	Thu Jan 10 21:23:30 2008 +0000
 +++ b/foo	Thu Jan 10 21:24:00 2008 +0000
 @@ -1,1 +1,1 @@

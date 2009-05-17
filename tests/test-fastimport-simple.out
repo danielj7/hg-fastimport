@@ -6,13 +6,13 @@ converting...
 0 add a line
 Removing blob dir 'HGTMP/test-fastimport-simple/simple/.hg/blobs' ...
 % hg log
-changeset:   1:777dd8cf7297
+changeset:   1:ec2bd7ac5b27
 tag:         tip
 user:        Example <example@example.org>
 date:        Thu Jan 10 21:20:01 2008 +0000
 summary:     add a line
 
-changeset:   0:1e4114af38f1
+changeset:   0:b7a8255f9622
 user:        Example <example@example.org>
 date:        Thu Jan 10 21:20:00 2008 +0000
 summary:     initial revision
