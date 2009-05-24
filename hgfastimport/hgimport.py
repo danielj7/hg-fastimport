@@ -109,14 +109,7 @@ class fastimport_source(common.converter_source):
     def _parse(self):
         if self.parsed:
             return
-
-        for source in self.sources:
-            self.ui.debug("reading fastimport source: %s\n" % source)
-            f = open(source)
-            p = parser.ImportParser(f)
-            self.processor.process(p.parse)
-            f.close()
-
+        processor.parseMany(self.sources, parser.ImportParser, self.processor)
         self.parsed = True
 
 class HgImportProcessor(processor.ImportProcessor):
