@@ -1,4 +1,5 @@
 from mercurial import encoding
+from mercurial.i18n import _
 from hgext.convert import convcmd, hg
 
 from fastimport import parser
@@ -29,18 +30,26 @@ def fastimport(ui, repo, *sources, **opts):
     destc = hg.mercurial_sink(ui, repo.root)
     srcc = fastimport_source(ui, repo, sources)
 
-    # TEMP hack to keep old behaviour and minimize test churn
-    # (this should be an option to fastimport)
-    opts['datesort'] = True
-
+    # XXX figuring out sortmode copied straight from hgext/convert/convcmd.py
+    defaultsort = 'branchsort'          # for efficiency and consistency
+    sortmodes = ('branchsort', 'datesort', 'sourcesort')
+    sortmode = [m for m in sortmodes if opts.get(m)]
+    if len(sortmode) > 1:
+        raise util.Abort(_('more than one sort mode specified'))
+    sortmode = sortmode and sortmode[0] or defaultsort
+    
     # not implemented: filemap, revmapfile
     revmapfile = destc.revmapfile()
     c = convcmd.converter(ui, srcc, destc, revmapfile, opts)
-    c.convert()
+    c.convert(sortmode)
 
+# XXX sort options copied straight from hgext/convert/__init__.py
 cmdtable = {
     "fastimport":
         (fastimport,
-         [],
+         [('', 'branchsort', None, _('try to sort changesets by branches')),
+          ('', 'datesort', None, _('try to sort changesets by date')),
+          ('', 'sourcesort', None, _('preserve source changesets order')),
+         ],
          'hg fastimport SOURCE ...')
 }
