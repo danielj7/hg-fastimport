@@ -108,7 +108,7 @@ echo "% import"
 rm -rf anonbranch
 hg init anonbranch
 cd anonbranch
-hg fastimport ../anonbranch.dump | sed "s|$HGTMP|HGTMP|g"
+hg fastimport --datesort ../anonbranch.dump | sed "s|$HGTMP|HGTMP|g"
 
 echo "% log"
 hg glog --template "{rev}:{node|short}\n{desc}\n\n"
