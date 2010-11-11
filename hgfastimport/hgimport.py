@@ -23,9 +23,13 @@ for basing real processors on. See the processors package for examples.
 import os
 import shutil
 
-from hgext.convert import common
+from hgext.convert import common, hg as converthg
 
 from fastimport import processor, parser
+
+# convertor source objects had a getmode() method up to Mercurial 1.5,
+# but in 1.6 it was merged with getfile()
+HAVE_GETMODE = hasattr(converthg.mercurial_source, 'getmode')
 
 class fastimport_source(common.converter_source):
     """Interface between the fastimport processor below and Mercurial's
@@ -53,19 +57,29 @@ class fastimport_source(common.converter_source):
             allheads.extend(branchheads)
         return allheads
 
-    def getfile(self, name, fileid):
-        """Return file contents as a string. rev is the identifier returned
-        by a previous call to getchanges().
-        """
-        if fileid is None:              # deleted file
-            raise IOError
-        return self.processor.getblob(fileid)
+    # Mercurial <= 1.5
+    if HAVE_GETMODE:
+        def getfile(self, name, fileid):
+            """Return file contents as a string. rev is the identifier returned
+            by a previous call to getchanges().
+            """
+            if fileid is None:              # deleted file
+                raise IOError
+            return self.processor.getblob(fileid)
 
-    def getmode(self, name, fileid):
-        """Return file mode, eg. '', 'x', or 'l'. rev is the identifier
-        returned by a previous call to getchanges().
-        """
-        return self.processor.getmode(name, fileid)
+        def getmode(self, name, fileid):
+            """Return file mode, eg. '', 'x', or 'l'. rev is the identifier
+            returned by a previous call to getchanges().
+            """
+            return self.processor.getmode(name, fileid)
+
+    # Mercurial >= 1.6
+    else:
+        def getfile(self, name, fileid):
+            if fileid is None:              # deleted file
+                raise IOError
+            return (self.processor.getblob(fileid),
+                    self.processor.getmode(name, fileid))
 
     def getchanges(self, commitid):
         """Returns a tuple of (files, copies).
