@@ -200,19 +200,19 @@ class HgImportProcessor(processor.ImportProcessor):
         # This command means nothing to us
         pass
 
-    def _getcommit(self, committish):
+    def _getcommit(self, commitref):
         """Given a mark reference or a branch name, return the
         appropriate commit object.  Return None if committish is a
         branch with no commits.  Raises KeyError if anything else is out
         of whack.
         """
-        if committish.startswith(":"):
+        if commitref.startswith(":"):
             # KeyError here indicates the input stream is broken.
-            return self.commitmap[committish]
+            return self.commitmap[commitref]
         else:
-            branch = self._getbranch(committish)
+            branch = self._getbranch(commitref)
             if branch is None:
-                raise ValueError("invalid committish: %r" % committish)
+                raise ValueError("invalid commit ref: %r" % commitref)
 
             heads = self.branchmap.get(branch)
             if heads is None:
