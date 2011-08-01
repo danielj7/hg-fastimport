@@ -3,7 +3,7 @@ from mercurial.i18n import _
 from hgext.convert import convcmd, hg
 
 from fastimport import parser
-from hgfastimport.hgimport import fastimport_source
+from hgimport import fastimport_source
 
 def fastimport(ui, repo, *sources, **opts):
     """Convert a git fastimport dump into Mercurial changesets.
