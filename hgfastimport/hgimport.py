@@ -128,6 +128,8 @@ class fastimport_source(common.converter_source):
 
 class HgImportProcessor(processor.ImportProcessor):
     
+    tagprefix = "refs/tags/"
+
     def __init__(self, ui, repo):
         super(HgImportProcessor, self).__init__()
         self.ui = ui
@@ -202,13 +204,15 @@ class HgImportProcessor(processor.ImportProcessor):
 
     def _getcommit(self, commitref):
         """Given a mark reference or a branch name, return the
-        appropriate commit object.  Return None if committish is a
-        branch with no commits.  Raises KeyError if anything else is out
-        of whack.
+        appropriate commit object.  Return None if commitref is a tag
+        or a branch with no commits.  Raises KeyError if anything else
+        is out of whack.
         """
         if commitref.startswith(":"):
             # KeyError here indicates the input stream is broken.
             return self.commitmap[commitref]
+        elif commitref.startswith(self.tagprefix):
+            return None
         else:
             branch = self._getbranch(commitref)
             if branch is None:
@@ -244,6 +248,10 @@ class HgImportProcessor(processor.ImportProcessor):
         # creator of the fastimport dump wants to call it.  So the name
         # of the fixup branch should be configurable!
         fixup = (cmd.ref == "refs/heads/TAG.FIXUP")
+
+        if cmd.ref.startswith(self.tagprefix) and cmd.mark:
+            tag = cmd.ref[len(self.tagprefix):]
+            self.tags.append((tag, ':' + cmd.mark))
 
         if cmd.from_:
             first_parent = cmd.from_
@@ -334,7 +342,6 @@ class HgImportProcessor(processor.ImportProcessor):
         return "%d %d" % res
         
     def reset_handler(self, cmd):
-        tagprefix = "refs/tags/"
         branch = self._getbranch(cmd.ref)
         if branch:
             # The usual case for 'reset': (re)create the named branch.
@@ -350,15 +357,16 @@ class HgImportProcessor(processor.ImportProcessor):
             #else:
             #    # XXX filename? line number?
             #    self.ui.warn("ignoring branch reset with no 'from'\n")
-        elif cmd.ref.startswith(tagprefix):
+        elif cmd.ref.startswith(self.tagprefix):
             # Create a "lightweight tag" in Git terms.  As I understand
             # it, that's a tag with no description and no history --
             # rather like CVS tags.  cvs2git turns CVS tags into Git
             # lightweight tags, so we should make sure they become
             # Mercurial tags.  But we don't have to fake a history for
             # them; save them up for the end.
-            tag = cmd.ref[len(tagprefix):]
-            self.tags.append((tag, cmd.from_))
+            if cmd.from_ is not None:
+                tag = cmd.ref[len(self.tagprefix):]
+                self.tags.append((tag, cmd.from_))
 
     def tag_handler(self, cmd):
         pass
