@@ -316,7 +316,8 @@ class HgImportProcessor(processor.ImportProcessor):
         date = self.convert_date(userinfo)
 
         parents = filter(None, [first_parent, second_parent])
-        commit = common.commit(user, date, text, parents, branch, rev=cmd.id)
+        commit = common.commit(user, date, text, parents, branch,
+                               rev=cmd.id, sortkey=int(cmd.id[1:]))
 
         self.commitmap[cmd.id] = commit
         heads = self.branchmap.get(branch)
