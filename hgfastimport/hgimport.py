@@ -333,7 +333,7 @@ class HgImportProcessor(processor.ImportProcessor):
         self.ui.debug("processed commit %s\n" % cmd)
 
     def convert_date(self, c):
-        res = (int(c[2]), int(c[3]))
+        res = (int(c[2]), -int(c[3]))
         #print c, res
         #print type((0, 0)), type(res), len(res), type(res) is type((0, 0))
         #if type(res) is type((0, 0)) and len(res) == 2:
