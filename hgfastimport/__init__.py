@@ -1,8 +1,7 @@
-from mercurial import encoding
+from mercurial import encoding, util
 from mercurial.i18n import _
 from hgext.convert import convcmd, hg
 
-from fastimport import parser
 from hgfastimport.hgimport import fastimport_source
 
 def fastimport(ui, repo, *sources, **opts):
