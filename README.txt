@@ -113,6 +113,7 @@ current maintainer:
 
 contributors:
   Paul Aurich <paul at darkrain42 dot org>
+  Jelmer Vernooij <jelmer at samba dot org>
 
 
 COPYRIGHT
