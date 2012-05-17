@@ -431,5 +431,5 @@ class HgImportCommitHandler(processor.CommitHandler):
 
     def rename_handler(self, filecmd):
         # copy oldname to newname and delete oldname
-        self.copies[filecmd.oldname] = filecmd.newname
-        self.files.append((filecmd.path, None))
+        self.copies[filecmd.new_path] = filecmd.old_path
+        self.modified.append((filecmd.old_path, None))
