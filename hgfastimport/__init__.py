@@ -20,6 +20,9 @@ def fastimport(ui, repo, *sources, **opts):
     # So for the time being, I have copied bits of convert() over here.
     # Boo, hiss.
 
+    if not sources:
+        sources = ("-")
+
     # assume fastimport metadata (usernames, commit messages) are
     # encoded UTF-8
     convcmd.orig_encoding = encoding.encoding
