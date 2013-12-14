@@ -22,6 +22,8 @@ for basing real processors on. See the processors package for examples.
 
 import os
 import shutil
+import stat
+import sys
 
 from hgext.convert import common, hg as converthg
 
@@ -123,8 +125,19 @@ class fastimport_source(common.converter_source):
     def _parse(self):
         if self.parsed:
             return
-        processor.parseMany(self.sources, parser.ImportParser, self.processor)
+        for source in self.sources:
+            if source == "-":
+                infile = sys.stdin
+            else:
+                infile = open(source, 'rb')
+            try:
+                p = parser.ImportParser(infile)
+                self.processor.process(p.iter_commands)
+            finally:
+                if infile is not sys.stdin:
+                    infile.close()
         self.parsed = True
+
 
 class HgImportProcessor(processor.ImportProcessor):
     
@@ -311,8 +324,7 @@ class HgImportProcessor(processor.ImportProcessor):
         else:
             user = "%s <%s>" % (userinfo[0], userinfo[1])
 
-        assert type(cmd.message) is unicode
-        text = cmd.message.encode("utf-8")
+        text = cmd.message
         date = self.convert_date(userinfo)
 
         parents = filter(None, [first_parent, second_parent])
@@ -409,12 +421,12 @@ class HgImportCommitHandler(processor.CommitHandler):
         fileid = (self.command.id, blobid)
 
         self.modified.append((filecmd.path, fileid))
-        if filecmd.mode.endswith("644"): # normal file
-            mode = ''
-        elif filecmd.mode.endswith("755"): # executable
-            mode = 'x'
-        elif filecmd.mode == "120000":  # symlink
+        if stat.S_ISLNK(filecmd.mode): # link
             mode = 'l'
+        elif filecmd.mode & 0111: # executable
+            mode = 'x'
+        elif stat.S_ISREG(filecmd.mode): # regular file
+            mode = ''
         else:
             raise RuntimeError("mode %r unsupported" % filecmd.mode)
 
@@ -428,5 +440,5 @@ class HgImportCommitHandler(processor.CommitHandler):
 
     def rename_handler(self, filecmd):
         # copy oldname to newname and delete oldname
-        self.copies[filecmd.oldname] = filecmd.newname
-        self.files.append((filecmd.path, None))
+        self.copies[filecmd.new_path] = filecmd.old_path
+        self.modified.append((filecmd.old_path, None))

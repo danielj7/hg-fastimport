@@ -27,26 +27,22 @@ DEPENDENCIES
 
 hg-fastimport requires Mercurial 1.3.
 
-hg-fastimport depends on the pyfastimport library (which was extracted
-from bzr-fastimport).  pyfastimport lives on launchpad.net at
+hg-fastimport depends on the python-fastimport library (which was extracted
+from bzr-fastimport).  python-fastimport lives on launchpad.net at
 
-  https://code.launchpad.net/~gward/bzr-fastimport/reusable
+  https://code.launchpad.net/python-fastimport
 
-Alternately, I maintain a Mercurial mirror of pyfastimport, so you can
-just use Mercurial to get the code:
-
-  hg clone http://vc.gerg.ca/hg/pyfastimport/
-
-To make the 'fastimport' package provided by pyfastimport available
-to hg-fastimport, you need to add the pyfastimport directory to
+To make the 'fastimport' package provided by python-fastimport available
+to hg-fastimport, you need to add the python-fastimport directory to
 PYTHONPATH, e.g.
 
   PYTHONPATH=$HOME/src/pyfastimport
 
-(Yes, this should get simpler in future: right now, both pyfastimport
-and hg-fastimport are under active development, so things are a bit
-messy.  Bear with me.)
+It should also be possible to install python-fastimport from cheeshop:
 
+ $ easy_install install python-fastimport
+
+And most Linux distributions have it packaged.
 
 USAGE
 -----
@@ -117,6 +113,7 @@ current maintainer:
 
 contributors:
   Paul Aurich <paul at darkrain42 dot org>
+  Jelmer Vernooij <jelmer at samba dot org>
 
 
 COPYRIGHT

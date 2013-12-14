@@ -1,8 +1,7 @@
-from mercurial import encoding
+from mercurial import encoding, util
 from mercurial.i18n import _
 from hgext.convert import convcmd, hg
 
-from fastimport import parser
 from hgimport import fastimport_source
 
 def fastimport(ui, repo, *sources, **opts):
@@ -20,6 +19,9 @@ def fastimport(ui, repo, *sources, **opts):
     #
     # So for the time being, I have copied bits of convert() over here.
     # Boo, hiss.
+
+    if not sources:
+        sources = ("-")
 
     # assume fastimport metadata (usernames, commit messages) are
     # encoded UTF-8
