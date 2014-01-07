@@ -6,18 +6,18 @@ converting...
 0 modify
 Removing blob dir 'HGTMP/test-fastimport-git/simplegit/.hg/blobs' ...
 % hg log
-o  changeset:   1:0a3befda043d
+o  changeset:   1:3ba674918e3f
 |  tag:         tip
 |  user:        Joe Contributor <joe@example.com>
-|  date:        Fri Jan 11 01:20:00 2008 +0400
+|  date:        Thu Jan 10 17:20:00 2008 -0400
 |  files:       ooga
 |  description:
 |  modify
 |
 |
-o  changeset:   0:9a4b81675bd1
+o  changeset:   0:339e2fa74ac1
    user:        Example <example@example.org>
-   date:        Fri Jan 11 01:21:00 2008 +0400
+   date:        Thu Jan 10 17:21:00 2008 -0400
    files:       foo.txt ooga
    description:
    initial revision

@@ -4,9 +4,9 @@ scanning source...
 sorting...
 converting...
 3 added Makefile
-2 create branch 'REL-2-2-3' (manufactured commit)
-1 create tag 'REL-2-2-3-P1' (manufactured commit)
-0 added iostream.h
+2 added iostream.h
+1 create branch 'REL-2-2-3' (manufactured commit)
+0 create tag 'REL-2-2-3-P1' (manufactured commit)
 updating tags
 Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs.1/.hg/blobs' ...
 % hg glog (git-dump-1.dat)
@@ -16,23 +16,23 @@ o  rev:    4
 |  files:  .hgtags
 |  desc:   update tags
 |
-o  rev:    3
-|  author: Other <other@example.com>
-|  branch: ''  tags:
-|  files:  main.cpp
-|  desc:   added iostream.h
-|
-| o  rev:    2
+| o  rev:    3
 | |  author: cvs2git
 | |  branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
 | |  files:  Tools/Debug/C++/DebugCpp.doxygen
 | |  desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 | |
-| o  rev:    1
-|/   author: cvs2git
-|    branch: 'REL-2-2-3'  tags:
-|    files:
-|    desc:   create branch 'REL-2-2-3' (manufactured commit)
+| o  rev:    2
+| |  author: cvs2git
+| |  branch: 'REL-2-2-3'  tags:
+| |  files:
+| |  desc:   create branch 'REL-2-2-3' (manufactured commit)
+| |
+o |  rev:    1
+|/   author: Other <other@example.com>
+|    branch: ''  tags:
+|    files:  main.cpp
+|    desc:   added iostream.h
 |
 o  rev:    0
    author: Example <example>
@@ -41,7 +41,7 @@ o  rev:    0
    desc:   added Makefile
 
 % hg branches (git-dump-1.dat)
-REL-2-2-3                      2:b4709b6ae328
+REL-2-2-3                      3:b4709b6ae328
 % hg heads -v (git-dump-1.dat)
 rev:    4
 author: convert-repo
@@ -49,23 +49,23 @@ branch: ''  tags:   tip
 files:  .hgtags
 desc:   update tags
 
-rev:    2
+rev:    3
 author: cvs2git
 branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
 files:  Tools/Debug/C++/DebugCpp.doxygen
 desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 
 % hg tags -v (git-dump-1.dat)
-REL-2-2-3-P1                       2:b4709b6ae328
+REL-2-2-3-P1                       3:b4709b6ae328
 ----------------------------------------
 % import git-dump-2.dat
 scanning source...
 sorting...
 converting...
 3 added Makefile
-2 create branch 'REL-2-2-3' (manufactured commit)
-1 create tag 'REL-2-2-3-P1' (manufactured commit)
-0 added iostream.h
+2 added iostream.h
+1 create branch 'REL-2-2-3' (manufactured commit)
+0 create tag 'REL-2-2-3-P1' (manufactured commit)
 updating tags
 Removing blob dir 'HGTMP/test-fastimport-cvs2git-fixup/realcvs.2/.hg/blobs' ...
 % hg glog (git-dump-2.dat)
@@ -75,23 +75,23 @@ o  rev:    4
 |  files:  .hgtags
 |  desc:   update tags
 |
-o  rev:    3
-|  author: Other <other@example.com>
-|  branch: ''  tags:
-|  files:  main.cpp
-|  desc:   added iostream.h
-|
-| o  rev:    2
+| o  rev:    3
 | |  author: cvs2git
 | |  branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
 | |  files:  Tools/Debug/C++/DebugCpp.doxygen
 | |  desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 | |
-| o  rev:    1
-|/   author: cvs2git
-|    branch: 'REL-2-2-3'  tags:
-|    files:
-|    desc:   create branch 'REL-2-2-3' (manufactured commit)
+| o  rev:    2
+| |  author: cvs2git
+| |  branch: 'REL-2-2-3'  tags:
+| |  files:
+| |  desc:   create branch 'REL-2-2-3' (manufactured commit)
+| |
+o |  rev:    1
+|/   author: Other <other@example.com>
+|    branch: ''  tags:
+|    files:  main.cpp
+|    desc:   added iostream.h
 |
 o  rev:    0
    author: Example <example>
@@ -100,7 +100,7 @@ o  rev:    0
    desc:   added Makefile
 
 % hg branches (git-dump-2.dat)
-REL-2-2-3                      2:b4709b6ae328
+REL-2-2-3                      3:b4709b6ae328
 % hg heads -v (git-dump-2.dat)
 rev:    4
 author: convert-repo
@@ -108,11 +108,11 @@ branch: ''  tags:   tip
 files:  .hgtags
 desc:   update tags
 
-rev:    2
+rev:    3
 author: cvs2git
 branch: 'REL-2-2-3'  tags:   REL-2-2-3-P1
 files:  Tools/Debug/C++/DebugCpp.doxygen
 desc:   create tag 'REL-2-2-3-P1' (manufactured commit)
 
 % hg tags -v (git-dump-2.dat)
-REL-2-2-3-P1                       2:b4709b6ae328
+REL-2-2-3-P1                       3:b4709b6ae328

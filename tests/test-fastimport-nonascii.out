@@ -4,7 +4,7 @@ sorting...
 converting...
 0 foo
 % log with non-ASCII committer
-changeset:   0:f44a7ebfef4b
+changeset:   0:f1709065901b
 tag:         tip
 user:        Jean-François <jf@example.com>
 date:        Fri Nov 30 14:58:10 2001 +0000
@@ -16,10 +16,10 @@ sorting...
 converting...
 0 blah
 % log with non-ASCII author
-changeset:   0:e10eff2ea202
+changeset:   0:639a4e09e8af
 tag:         tip
 user:        Jürgen <juergen@example.org>
-date:        Tue Aug 11 10:13:20 2009 -0400
+date:        Tue Aug 11 18:13:20 2009 +0400
 summary:     blah
 
 % import dump with non-ASCII message
@@ -29,10 +29,10 @@ converting...
 0 fix na?ve implementation that ?le threw together for ?5
 Removing blob dir 'HGTMP/test-fastimport-nonascii/message/.hg/blobs' ...
 % log with non-ASCII message
-changeset:   0:cfd47dca9906
+changeset:   0:52b3afdff0e7
 tag:         tip
 user:        Dave <dave@example.org>
-date:        Tue Aug 11 10:13:50 2009 -0400
+date:        Tue Aug 11 18:13:50 2009 +0400
 summary:     fix naïve implementation that Øle threw together for €5
 
 % manifest

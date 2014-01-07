@@ -5,13 +5,13 @@ converting...
 2 
 1 
 0 
-o    2:0c314954ac3f
+o    2:13e1998d1ff7
 |\
 | |
-| o  1:1c1c7986a7e1
+| o  1:c9b20d94b66d
 |/
 |
-o  0:ca38501957af
+o  0:81104ccca52d
 
 
 % dump with redundant 'from' directive
@@ -20,9 +20,9 @@ sorting...
 converting...
 1 
 0 
-o  1:1c1c7986a7e1
+o  1:c9b20d94b66d
 |
 |
-o  0:ca38501957af
+o  0:81104ccca52d
 
 
