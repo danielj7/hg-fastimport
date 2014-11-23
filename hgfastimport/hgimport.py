@@ -26,6 +26,8 @@ import stat
 import sys
 
 from hgext.convert import common, hg as converthg
+from mercurial import util
+from mercurial.i18n import _
 
 from fastimport import processor, parser
 
@@ -79,11 +81,13 @@ class fastimport_source(common.converter_source):
     else:
         def getfile(self, name, fileid):
             if fileid is None:              # deleted file
-                raise IOError
+                return None, None
             return (self.processor.getblob(fileid),
                     self.processor.getmode(name, fileid))
 
-    def getchanges(self, commitid):
+    def getchanges(self, commitid, full):
+        if full:
+            raise util.Abort(_("convert from fastimport does not support --full"))
         """Returns a tuple of (files, copies).
 
         files is a sorted list of (filename, id) tuples for all files
