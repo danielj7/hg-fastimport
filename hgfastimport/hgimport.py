@@ -86,18 +86,21 @@ class fastimport_source(common.converter_source):
                     self.processor.getmode(name, fileid))
 
     def getchanges(self, commitid, full):
-        if full:
-            raise util.Abort(_("convert from fastimport does not support --full"))
-        """Returns a tuple of (files, copies).
+        """Returns a tuple of (files, copies, cleanp2).
 
         files is a sorted list of (filename, id) tuples for all files
         changed between commitid and its first parent returned by
-        getcommit(). id is the source revision id of the file.
+        getcommit().
+        commitid is the source revision id of the file.
+		cleanp2 is currently unused and an empty set is returned.
 
         copies is a dictionary of dest: source
         """
+        if full:
+            raise util.Abort(_("convert from fastimport does not support --full"))
         return (self.processor.modified[commitid],
-                self.processor.copies[commitid])
+                self.processor.copies[commitid],
+                set())
 
     def getcommit(self, commitid):
         """Return the commit object for commitid"""
