@@ -21,7 +21,7 @@ from .hgimport import fastimport_source
 cmdtable = {}
 command = cmdutil.command(cmdtable)
 
-testedwith = '4.1'
+testedwith = '4.5'
 
 
 @command("fastimport",
@@ -55,8 +55,8 @@ def fastimport(ui, repo, *sources, **opts):
     encoding.encoding = 'UTF-8'
 
     # sink is the current repo, src is the list of fastimport streams
-    destc = hg.mercurial_sink(ui, repo.root)
-    srcc = fastimport_source(ui, repo, sources)
+    destc = hg.mercurial_sink(ui, 'hg', repo.root)
+    srcc = fastimport_source(ui, 'fastimport', repo, sources)
 
     # XXX figuring out sortmode copied straight from hgext/convert/convcmd.py
     defaultsort = 'branchsort'          # for efficiency and consistency

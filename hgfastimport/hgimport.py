@@ -39,11 +39,12 @@ class fastimport_source(common.converter_source):
     """Interface between the fastimport processor below and Mercurial's
     normal conversion infrastructure.
     """
-    def __init__(self, ui, repo, sources):
+    def __init__(self, ui, repotype, repo, sources):
         self.ui = ui
         self.sources = sources
         self.processor = HgImportProcessor(ui, repo)
         self.parsed = False
+        self.repotype = repotype
 
     # converter_source methods
 
