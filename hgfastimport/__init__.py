@@ -19,9 +19,13 @@ from .hgimport import fastimport_source
 
 # XXX sort options copied straight from hgext/convert/__init__.py
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+try: 
+    from mercurial import registrar 
+    command = registrar.command(cmdtable) 
+except (ImportError, AttributeError): 
+    command = cmdutil.command(cmdtable) 
 
-testedwith = '4.5'
+testedwith = '4.7'
 
 
 @command("fastimport",
